@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   
   // Then load polygons with the map instance
   await loadFireData(map);
+  await loadPolygons(map);
 });
 
 
