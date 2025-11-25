@@ -8,7 +8,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   await loadPolygons(map);
 });
 
-
 //Load fire hotspot data
 async function loadFireData(map) {
   const res = await fetch('/api/fire_hotspots');
@@ -20,13 +19,13 @@ async function loadFireData(map) {
   });
 }
 
-//Load polygon data
+//Load basline polygon data
 async function loadPolygons(map) {
   const res = await fetch('/api/admin1');
   const data = await res.json();
 
   L.geoJSON(data, {
-    style: { color: 'blue', weight: 1, fillOpacity: 0.2 },
+    style: { color: 'blue', weight: 1, fillOpacity: 0.1 },
     onEachFeature: function(feature, layer) {
       if (feature.properties && feature.properties.ADM1_EN) {
         layer.bindPopup(feature.properties.ADM1_EN);
