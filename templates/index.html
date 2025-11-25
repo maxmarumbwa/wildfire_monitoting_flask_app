@@ -9,12 +9,23 @@
         <!-- SIDEBAR -->
       {% include 'sidebar1.html' %}
 
-        <!-- MAP SECTION -->
-        <div class="col-md-9">
+     <!-- MAP SECTION -->
+<div class="col-md-7" style="height: 100vh; display: flex; flex-direction: column; border:1px solid #7f7373ff;">
 
-            <div id="map" style="height: 90vh; border:1px solid #7f7373ff;"></div>
-        </div>
+    <!-- Map takes 80% of the container height -->
+    <div id="map" style="flex: 8; border:1px solid #7f7373ff;"></div>
 
+    <!-- Bottom stats and graph takes 20% -->
+    <div style="flex: 2; overflow-y: auto;">
+        {% include 'stats.html' %}
+    </div>
+
+</div>
+
+
+
+        <!-- RIGHT SIDEBAR -->
+      {% include 'sidebar2.html' %}
     </div> 
 </div>
 

@@ -1,7 +1,7 @@
    <!-- 🌍 SIDEBAR -->
         <div class="col-md-3 bg-light sidebar">
             <div class="p-3">
-                <h5 class="text-danger">FIRE HOTSPOT 2000-2025</h5>
+                <h7 class="text-danger">Active fire hotspots2000-2025</h7>
 
                 <div class="mb-3">
                     <select class="form-select" id="yearSelect">
@@ -37,23 +37,12 @@
 
                 <hr>
 
-                <h6 class="text-danger">RESOURCES</h6>
-                <div class="resource-list">
-                    <div class="form-check"><input class="form-check-input" type="checkbox" id="activeFireNRT">
-                        <label class="form-check-label" for="activeFireNRT">Active Fire (NRT)</label>
-                    </div>
-                    <div class="form-check"><input class="form-check-input" type="checkbox" id="fireHotspot">
-                        <label class="form-check-label" for="fireHotspot">Fire Hotspot 2000-24</label>
-                    </div>
-                    <div class="form-check"><input class="form-check-input" type="checkbox" id="burntArea">
-                        <label class="form-check-label" for="burntArea">Burnt Area Mapping</label>
-                    </div>
-                    <div class="form-check"><input class="form-check-input" type="checkbox" id="sentinelNBR">
-                        <label class="form-check-label" for="sentinelNBR">Sentinel-NBR</label>
-                    </div>
-                    <div class="form-check"><input class="form-check-input" type="checkbox" id="landsatNBR">
-                        <label class="form-check-label" for="landsatNBR">Landsat-NBR</label>
-                    </div>
+
+                <h8 class="text-danger">ACTIVE FIRES IN VIEW</h8>
+
+                <div class="p-2 bg-white rounded shadow-sm">
+                    <h7 id="activeFireCount" class="text-center text-danger mb-0">0</h7>
+                    <small class="text-muted d-block text-center">fires detected</small>
                 </div>
             </div>
         </div>
