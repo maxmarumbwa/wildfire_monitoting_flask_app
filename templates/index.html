@@ -6,65 +6,8 @@
 <div class="container-fluid mt-3">
     <div class="row">
 
-        <!-- 🌍 SIDEBAR -->
-        <div class="col-md-3 bg-light sidebar">
-            <div class="p-3">
-                <h5 class="text-danger">FIRE HOTSPOT 2000-2025</h5>
-
-                <div class="mb-3">
-                    <select class="form-select" id="yearSelect">
-                        <option value="2003" selected>2003</option>
-                        {% for year in range(2000, 2026) %}
-                        <option value="{{ year }}">{{ year }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label">Filter By Season</label>
-                    <select class="form-select" id="seasonSelect">
-                        <option value="all">All Seasons</option>
-                        <option value="dry">Dry Season</option>
-                        <option value="wet">Wet Season</option>
-                    </select>
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label">Filter By Province</label>
-                    <select class="form-select" id="provinceSelect">
-                        <option value="all">All Provinces</option>
-                    </select>
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label">Filter By District</label>
-                    <select class="form-select" id="districtSelect">
-                        <option value="all">All Districts</option>
-                    </select>
-                </div>
-
-                <hr>
-
-                <h6 class="text-danger">RESOURCES</h6>
-                <div class="resource-list">
-                    <div class="form-check"><input class="form-check-input" type="checkbox" id="activeFireNRT">
-                        <label class="form-check-label" for="activeFireNRT">Active Fire (NRT)</label>
-                    </div>
-                    <div class="form-check"><input class="form-check-input" type="checkbox" id="fireHotspot">
-                        <label class="form-check-label" for="fireHotspot">Fire Hotspot 2000-24</label>
-                    </div>
-                    <div class="form-check"><input class="form-check-input" type="checkbox" id="burntArea">
-                        <label class="form-check-label" for="burntArea">Burnt Area Mapping</label>
-                    </div>
-                    <div class="form-check"><input class="form-check-input" type="checkbox" id="sentinelNBR">
-                        <label class="form-check-label" for="sentinelNBR">Sentinel-NBR</label>
-                    </div>
-                    <div class="form-check"><input class="form-check-input" type="checkbox" id="landsatNBR">
-                        <label class="form-check-label" for="landsatNBR">Landsat-NBR</label>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <!-- SIDEBAR -->
+      {% include 'sidebar1.html' %}
 
         <!-- 🗺️ MAP SECTION -->
         <div class="col-md-9">
