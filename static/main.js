@@ -35,13 +35,90 @@ async function loadFireData(layerGroup) {
  
   data.features.forEach(f => {
     const [lon, lat] = f.geometry.coordinates;
+    const properties = f.properties || {};
+    
+    // Create popup content with fire information
+    const popupContent = createFirePopupContent(properties);
+    
+    // Create circle marker with click event
     L.circleMarker([lat, lon], {
-      radius: 1,
+      radius: 5,
       color: 'red',
       fillColor: '#f03',
-      fillOpacity: 0.8
-    }).addTo(layerGroup);
+      fillOpacity: 0.8,
+      weight: 1
+    })
+    .bindPopup(popupContent)
+    .on('click', function(e) {
+      // Optional: You can add additional click handling here
+      console.log('Fire hotspot clicked:', properties);
+    })
+    .addTo(layerGroup);
   });
+}
+
+// Create popup content for fire hotspots
+function createFirePopupContent(properties) {
+  // Customize this based on what data your API returns
+  let content = '<div class="fire-popup"><h3>🔥 Fire Hotspot</h3>';
+  
+  // Add common fire hotspot properties
+  if (properties.confidence) {
+    content += `<p><strong>Confidence:</strong> ${properties.confidence}%</p>`;
+  }
+  
+  if (properties.brightness) {
+    content += `<p><strong>Brightness:</strong> ${properties.brightness}°C</p>`;
+  }
+  
+  if (properties.acq_date) {
+    content += `<p><strong>Date:</strong> ${formatDate(properties.acq_date)}</p>`;
+  }
+  
+  if (properties.acq_time) {
+    content += `<p><strong>Time:</strong> ${formatTime(properties.acq_time)}</p>`;
+  }
+  
+  if (properties.satellite) {
+    content += `<p><strong>Satellite:</strong> ${properties.satellite}</p>`;
+  }
+  
+  if (properties.frp) {
+    content += `<p><strong>Fire Radiative Power:</strong> ${properties.frp} MW</p>`;
+  }
+  
+  // Add any other properties that might be useful
+  Object.keys(properties).forEach(key => {
+    if (!['confidence', 'brightness', 'acq_date', 'acq_time', 'satellite', 'frp'].includes(key)) {
+      content += `<p><strong>${key}:</strong> ${properties[key]}</p>`;
+    }
+  });
+  
+  content += '</div>';
+  return content;
+}
+
+// Helper function to format date
+function formatDate(dateString) {
+  try {
+    return new Date(dateString).toLocaleDateString();
+  } catch (e) {
+    return dateString;
+  }
+}
+
+// Helper function to format time
+function formatTime(timeString) {
+  if (!timeString) return 'Unknown';
+  
+  // If time is in HHMM format (common in fire data)
+  if (timeString.length === 4) {
+    const hours = timeString.substring(0, 2);
+    const minutes = timeString.substring(2, 4);
+    return `${hours}:${minutes}`;
+  }
+  
+  return timeString;
 }
 
 // Load baseline polygon data
