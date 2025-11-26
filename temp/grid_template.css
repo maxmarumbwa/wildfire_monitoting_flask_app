@@ -18,6 +18,20 @@ body {
     grid-template-rows: 80px 1fr 70px;
 }
 
+#map {
+    color: rgb(215, 225, 244);
+    background-color: #edfacd;
+    height: 80%;
+    padding: 0%;
+    margin: 0%;
+}
+
+#graph {
+    color: rgb(59, 115, 237);
+    background-color: #b8d72f;
+    height: 20%;
+}
+
 header,
 footer,
 main,
