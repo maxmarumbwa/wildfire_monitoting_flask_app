@@ -18,12 +18,30 @@ body {
     grid-template-rows: 80px 1fr 70px;
 }
 
+
+main {
+    display: flex;
+    flex-direction: column;
+}
+
+.top-section {
+    flex: 0 0 80%;
+    /* 80% height */
+    background: #e6e6e6;
+}
+
+.bottom-section {
+    flex: 0 0 20%;
+    /* 20% height */
+    background: #ccc;
+}
+
+
+
 #map {
     color: rgb(215, 225, 244);
     background-color: #edfacd;
     height: 80%;
-    padding: 0%;
-    margin: 0%;
 }
 
 #graph {
