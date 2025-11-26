@@ -13,9 +13,9 @@ body {
     grid-template-areas:
         'header header header'
         'nav content sidebar'
-        'nav footer footer';
+        'nav content footer';
     grid-template-columns: 1fr 4fr 1fr;
-    grid-template-rows: 80px 1fr 70px;
+    grid-template-rows: 40px 1fr 130px;
 }
 
 
@@ -34,20 +34,6 @@ main {
     flex: 0 0 20%;
     /* 20% height */
     background: #ccc;
-}
-
-
-
-#map {
-    color: rgb(215, 225, 244);
-    background-color: #edfacd;
-    height: 80%;
-}
-
-#graph {
-    color: rgb(59, 115, 237);
-    background-color: #b8d72f;
-    height: 20%;
 }
 
 header,
@@ -80,3 +66,6 @@ aside {
 footer {
     grid-area: footer;
 }
+
+
+/* Responsive adjustments */
