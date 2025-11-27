@@ -1,10 +1,13 @@
-  <div class="bottom-section">
-    <div class="graph">
-      {% include 'graph.html' %}
-    </div>
+<div class="bottom-section" id="bottomSection">
+  <button id="toggleBottom" class="btn btn-sm btn-secondary">
+    Hide Bottom Section
+  </button>
 
-    <div class="pie-chart">
-      {% include 'piechart.html' %}
-    </div>
-
+  <div class="graph">
+    {% include 'graph.html' %}
   </div>
+
+  <div class="pie-chart">
+    {% include 'piechart.html' %}
+  </div>
+</div>
