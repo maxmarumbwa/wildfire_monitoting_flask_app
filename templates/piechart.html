@@ -1,0 +1,31 @@
+<div class="piechart-wrapper">
+    <h6 class="text-center mb-1">fires per province</h6>
+
+    <canvas id="pieChart"></canvas>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+
+            const ctx = document.getElementById('pieChart').getContext('2d');
+
+            new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: ["Harare", "Bulawayo", "Midlands", "Mutare", "Masvingo", "Mutare", "Mashonaland", "Matebeleland"],
+                    datasets: [{
+                        data: [15, 5, 30, 18, 2, 10, 12, 8],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+
+        });
+    </script>
+
+</div>

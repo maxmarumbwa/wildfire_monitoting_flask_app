@@ -33,8 +33,23 @@ main {
 .bottom-section {
     flex: 0 0 20%;
     /* 20% height */
-    background: #ccc;
+    background: #e6e6e6;
 }
+
+.bottom-section {
+    display: flex;
+    flex-direction: row;
+}
+
+.pie-chart {
+    width: 50%;
+}
+
+.graph {
+    width: 50%;
+}
+
+
 
 header,
 footer,
@@ -73,4 +88,36 @@ footer {
     height: 100%;
     border: 1px solid #7f7373ff;
 
+}
+
+
+/* Chart container styling */
+
+/* Restrict the chart height */
+.graph-wrapper {
+    width: 100%;
+    height: 140px;
+    width: 80%;
+    /* ⭐ FIX: Chart height limited */
+    padding: 5px;
+    border-right: 1px solid #7f7373ff;
+
+}
+
+.graph {
+    width: 100%;
+    height: 100%;
+    /* fill wrapper, but wrapper is small */
+}
+
+.piechart-wrapper {
+    width: 100%;
+    height: 120px;
+    /* ⭐ IMPORTANT: restrict height */
+    padding: 5px;
+}
+
+#pieChart {
+    width: 100%;
+    height: 100%;
 }
