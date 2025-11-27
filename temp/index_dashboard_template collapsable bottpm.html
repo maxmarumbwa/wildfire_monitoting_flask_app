@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Wildfire Monitoring System - Zimbabwe</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         * {
             box-sizing: border-box;
@@ -13,7 +14,7 @@
         }
 
         body {
-            font-family: 'Open Sans', sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             font-size: 16px;
             height: 100vh;
             display: grid;
@@ -21,99 +22,277 @@
                 'header header header'
                 'nav content sidebar'
                 'nav footer footer';
-            grid-template-columns: 1fr 4fr 1fr;
-            grid-template-rows: 40px 1fr 130px;
+            grid-template-columns: 200px 1fr 250px;
+            grid-template-rows: 60px 1fr 50px;
+            /* Footer height reduced from 100px to 50px */
+            background-color: #f5f5f5;
+        }
+
+        header {
+            grid-area: header;
+            background-color: #2c3e50;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            border-bottom: 2px solid #1a252f;
+        }
+
+        nav {
+            grid-area: nav;
+            background-color: #34495e;
+            color: white;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .nav-item {
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-item a {
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-item a i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .nav-item a:hover {
+            color: #3498db;
         }
 
         main {
             grid-area: content;
             display: flex;
             flex-direction: column;
+            background-color: white;
         }
 
         .top-section {
             flex: 1;
             background: #e6e6e6;
             position: relative;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .map-container {
+            flex: 1;
+            background: #a0d2e6;
+            border: 1px solid #3498db;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #2c3e50;
         }
 
         .bottom-section {
-            height: 20%;
-            background: #ccc;
+            height: 250px;
+            background: #f8f9fa;
             transition: height 0.3s ease;
+            padding: 15px;
+            display: flex;
+            gap: 15px;
+            border-top: 2px solid #dee2e6;
+            overflow: hidden;
         }
 
         .bottom-section.collapsed {
             height: 0;
+            padding: 0;
+            border-top: none;
+        }
+
+        .card {
+            flex: 1;
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-header {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #2c3e50;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 8px;
+            display: flex;
+            align-items: center;
+        }
+
+        .card-header i {
+            margin-right: 8px;
+            color: #3498db;
+        }
+
+        .card-content {
+            flex: 1;
+            background: #f8f9fa;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #6c757d;
+            font-style: italic;
         }
 
         .toggle-button {
             position: absolute;
-            bottom: 10px;
-            right: 10px;
-            padding: 5px 10px;
-            background: steelblue;
+            bottom: 15px;
+            right: 15px;
+            padding: 8px 15px;
+            background: #2c3e50;
             color: white;
             border: none;
             cursor: pointer;
-            border-radius: 3px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         }
 
-        header,
-        footer,
-        main,
-        aside,
-        nav {
-            background-color: steelblue;
-            color: #fff;
-            padding: 20px;
-            border: skyblue 1px solid;
-        }
-
-        header {
-            grid-area: header;
-        }
-
-        nav {
-            grid-area: nav;
+        .toggle-button:hover {
+            background: #1a252f;
         }
 
         aside {
             grid-area: sidebar;
+            background-color: #ecf0f1;
+            padding: 15px;
+            border-left: 1px solid #dee2e6;
+        }
+
+        .sidebar-section {
+            margin-bottom: 20px;
+        }
+
+        .sidebar-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #2c3e50;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
         }
 
         footer {
             grid-area: footer;
+            background-color: #2c3e50;
+            color: white;
+            padding: 10px 20px;
+            /* Reduced padding from 15px to 10px */
+            text-align: center;
+            border-top: 2px solid #1a252f;
+            font-size: 14px;
+            /* Optional: slightly smaller font */
         }
     </style>
 </head>
 
 <body>
-    <header>Header</header>
-    <nav>Navigation</nav>
+    <header>
+        <h1><i class="fas fa-fire"></i> Wildfire Monitoring System FMS - Zimbabwe</h1>
+    </header>
+
+    <nav>
+        <div class="nav-item">
+            <a href="#"><i class="fas fa-home"></i> Dashboard</a>
+        </div>
+        <div class="nav-item">
+            <a href="#"><i class="fas fa-fire"></i> Active Fires</a>
+        </div>
+        <div class="nav-item">
+            <a href="#"><i class="fas fa-chart-line"></i> Statistics</a>
+        </div>
+        <div class="nav-item">
+            <a href="#"><i class="fas fa-map-marked-alt"></i> Risk Areas</a>
+        </div>
+        <div class="nav-item">
+            <a href="#"><i class="fas fa-bell"></i> Alerts</a>
+        </div>
+        <div class="nav-item">
+            <a href="#"><i class="fas fa-cog"></i> Settings</a>
+        </div>
+    </nav>
+
     <main>
         <div class="top-section">
-            Top Section (Map Area)
-            <button class="toggle-button" id="toggleButton">Collapse Bottom</button>
+            <div class="map-container">
+                <i class="fas fa-map-marked-alt" style="font-size: 24px; margin-right: 10px;"></i>
+                Interactive Map Display
+            </div>
+            <button class="toggle-button" id="toggleButton">
+                <i class="fas fa-chevron-up" id="toggleIcon"></i>
+                <span id="toggleText">Collapse Charts</span>
+            </button>
         </div>
         <div class="bottom-section" id="bottomSection">
-            Bottom Section (Charts Area)
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-chart-line"></i> Fire Incidents Over Time
+                </div>
+                <div class="card-content">
+                    Fire Trend Visualization Chart
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-chart-pie"></i> Fire Distribution by Province
+                </div>
+                <div class="card-content">
+                    Province Distribution Pie Chart
+                </div>
+            </div>
         </div>
     </main>
-    <aside>Sidebar</aside>
-    <footer>Footer</footer>
+
+    <aside>
+        <div class="sidebar-section">
+            <div class="sidebar-title">Current Status</div>
+            <div>Active Fires: 24</div>
+            <div>High Risk Areas: 8</div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-title">Recent Alerts</div>
+            <div>New fire in Mashonaland West</div>
+            <div>Fire spreading in Matabeleland North</div>
+        </div>
+    </aside>
+
+    <footer>
+        Zimbabwe Forestry Commission &copy; 2023 | Wildfire Monitoring System
+    </footer>
 
     <script>
         const toggleButton = document.getElementById('toggleButton');
         const bottomSection = document.getElementById('bottomSection');
+        const toggleIcon = document.getElementById('toggleIcon');
+        const toggleText = document.getElementById('toggleText');
 
         toggleButton.addEventListener('click', function () {
             bottomSection.classList.toggle('collapsed');
 
             if (bottomSection.classList.contains('collapsed')) {
-                toggleButton.textContent = 'Expand Bottom';
+                toggleIcon.className = 'fas fa-chevron-down';
+                toggleText.textContent = 'Expand Charts';
             } else {
-                toggleButton.textContent = 'Collapse Bottom';
+                toggleIcon.className = 'fas fa-chevron-up';
+                toggleText.textContent = 'Collapse Charts';
             }
         });
     </script>

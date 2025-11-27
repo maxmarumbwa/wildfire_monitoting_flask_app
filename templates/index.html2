@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Wildfire Monitoring System FMS - Zimbabwe{% endblock %}
+
+{% block content %}
+
+<header>Wildfire Monitoring System FMS - Zimbabwe</header>
+
+<main>
+  {% include 'main_top.html' %}
+  {% include 'main_bottom.html' %}
+</main>
+
+<nav>
+  {% include 'navigation.html' %}
+</nav>
+<aside>
+  {% include 'sidebar2.html' %}
+</aside>
+<footer>Footer</footer>
+
+{% endblock %}
