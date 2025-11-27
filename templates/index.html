@@ -4,24 +4,12 @@
 {% block content %}
 
 <header>Wildfire Monitoring System FMS - Zimbabwe</header>
+
 <main>
-  <div class="top-section">
-    <div id="map"></div>
-  </div>
-
-  <div class="bottom-section">
-    <div class="graph">
-      {% include 'graph.html' %}
-    </div>
-
-    <div class="pie-chart">
-      {% include 'piechart.html' %}
-    </div>
-
-  </div>
-
-
+  {% include 'main_top.html' %}
+  {% include 'main_bottom.html' %}
 </main>
+
 <nav>
   {% include 'navigation.html' %}
 </nav>
