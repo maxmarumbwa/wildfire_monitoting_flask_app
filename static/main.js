@@ -144,3 +144,4 @@ async function loadPolygons(layerGroup) {
     }
   }).addTo(layerGroup);
 }
+

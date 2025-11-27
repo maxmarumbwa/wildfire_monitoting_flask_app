@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wildfire Monitoring System - Zimbabwe</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            padding: 0;
+            margin: 0;
+        }
+
+        body {
+            font-family: 'Open Sans', sans-serif;
+            font-size: 16px;
+            height: 100vh;
+            display: grid;
+            grid-template-areas:
+                'header header header'
+                'nav content sidebar'
+                'nav footer footer';
+            grid-template-columns: 1fr 4fr 1fr;
+            grid-template-rows: 40px 1fr 130px;
+        }
+
+        main {
+            grid-area: content;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .top-section {
+            flex: 1;
+            background: #e6e6e6;
+            position: relative;
+        }
+
+        .bottom-section {
+            height: 20%;
+            background: #ccc;
+            transition: height 0.3s ease;
+        }
+
+        .bottom-section.collapsed {
+            height: 0;
+        }
+
+        .toggle-button {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            padding: 5px 10px;
+            background: steelblue;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 3px;
+        }
+
+        header,
+        footer,
+        main,
+        aside,
+        nav {
+            background-color: steelblue;
+            color: #fff;
+            padding: 20px;
+            border: skyblue 1px solid;
+        }
+
+        header {
+            grid-area: header;
+        }
+
+        nav {
+            grid-area: nav;
+        }
+
+        aside {
+            grid-area: sidebar;
+        }
+
+        footer {
+            grid-area: footer;
+        }
+    </style>
+</head>
+
+<body>
+    <header>Header</header>
+    <nav>Navigation</nav>
+    <main>
+        <div class="top-section">
+            Top Section (Map Area)
+            <button class="toggle-button" id="toggleButton">Collapse Bottom</button>
+        </div>
+        <div class="bottom-section" id="bottomSection">
+            Bottom Section (Charts Area)
+        </div>
+    </main>
+    <aside>Sidebar</aside>
+    <footer>Footer</footer>
+
+    <script>
+        const toggleButton = document.getElementById('toggleButton');
+        const bottomSection = document.getElementById('bottomSection');
+
+        toggleButton.addEventListener('click', function () {
+            bottomSection.classList.toggle('collapsed');
+
+            if (bottomSection.classList.contains('collapsed')) {
+                toggleButton.textContent = 'Expand Bottom';
+            } else {
+                toggleButton.textContent = 'Collapse Bottom';
+            }
+        });
+    </script>
+</body>
+
+</html>
