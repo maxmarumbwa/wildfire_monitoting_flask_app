@@ -91,8 +91,7 @@ footer {
 }
 
 
-/* Chart container styling */
-
+/* -------------- Chart container styling -------*/
 /* Restrict the chart height */
 .graph-wrapper {
     width: 100%;
@@ -120,4 +119,10 @@ footer {
 #pieChart {
     width: 100%;
     height: 100%;
+}
+
+
+/* -------------- Side bar styling -------*/
+.sidebar {
+    width: 100%;
 }
