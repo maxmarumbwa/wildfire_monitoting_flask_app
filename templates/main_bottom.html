@@ -1,13 +1,25 @@
-<div class="bottom-section" id="bottomSection">
-  <button id="toggleBottom" class="btn btn-sm btn-secondary">
-    Hide Bottom Section
-  </button>
-
-  <div class="graph">
-    {% include 'graph.html' %}
-  </div>
-
-  <div class="pie-chart">
-    {% include 'piechart.html' %}
-  </div>
-</div>
+ <!-- Bottom section now positioned absolutely -->
+    <div class="bottom-section" id="bottomSection"> 
+        <div class="card"> 
+            <div class="card-header"> 
+                <i class="fas fa-chart-line"></i> Fire Incidents Over Time 
+            </div> 
+            <div class="card-content"> 
+                Fire Trend Visualization Chart 
+            </div> 
+        </div> 
+        <div class="card"> 
+            <div class="card-header"> 
+                <i class="fas fa-chart-pie"></i> Fire Distribution by Province 
+            </div> 
+            <div class="card-content"> 
+                Province Distribution Pie Chart 
+            </div> 
+        </div> 
+    </div> 
+    
+    <!-- Toggle button moved outside and positioned absolutely -->
+    <button class="toggle-button" id="toggleButton"> 
+        <i class="fas fa-chevron-up" id="toggleIcon"></i> 
+        <span id="toggleText">Collapse Charts</span> 
+    </button> 

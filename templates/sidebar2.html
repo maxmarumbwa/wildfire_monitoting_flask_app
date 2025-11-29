@@ -1,21 +1,12 @@
-<!-- RIGHT SIDEBAR -->
-<div class="col-md-2 bg-light sidebar">
-    <div class="p-3">
-        <h5 class="text-primary">ANALYTICS</h5>
-
-        <div class="mb-3">
-            <label class="form-label">Summary Charts</label>
-            <select class="form-select" id="analyticsSelect">
-                <option value="fires">Fire Trends</option>
-                <option value="burntArea">Burnt Area Stats</option>
-                <option value="seasonal">Seasonal Variations</option>
-            </select>
+                <div class="sidebar-title">ANALYTICS</div>
+                      <div class="sidebar-section">
+            <div class="sidebar-title">Current Status</div>
+            <div>Active Fires: 2s4</div>
+            <div>High Risk Areas: 8</div>
         </div>
 
-        <hr>
-
-        <!-- Fire Impact Overlay Section -->
-        <h6 class="text-primary">FIRE IMPACT OVERLAY</h6>
+        <div class="sidebar-section">
+            <div class="sidebar-title">Fire Impact overlay</div>
         <div class="overlay-list mb-3">
             <div class="form-check">
                 <input class="form-check-input" type="checkbox" id="settlementOverlay">
@@ -24,7 +15,7 @@
 
             <div class="form-check">
                 <input class="form-check-input" type="checkbox" id="floodProneOverlay">
-                <label class="form-check-label" for="floodProneOverlay">Flood Prone</label>
+                <label class="form-check-label" for="floodProneOverlay">Fire risk map</label>
             </div>
 
             <div class="form-check">
@@ -38,9 +29,16 @@
             </div>
         </div>
 
-        <hr>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-title">Fire Risk Forecasts</div>
+            <div>New fire in Mashonaland West</div>
+            <div>Fire spreading in Matabeleland North</div>
+        </div>
 
-        <h6 class="text-primary">TOOLS</h6>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-title">Tools</div>
         <div class="tool-list">
             <div class="form-check">
                 <input class="form-check-input" type="checkbox" id="downloadMap">
@@ -51,11 +49,4 @@
                 <input class="form-check-input" type="checkbox" id="toggleLegend">
                 <label class="form-check-label" for="toggleLegend">Show Legend</label>
             </div>
-
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" id="compareYears">
-                <label class="form-check-label" for="compareYears">Compare Years</label>
-            </div>
         </div>
-    </div>
-</div>

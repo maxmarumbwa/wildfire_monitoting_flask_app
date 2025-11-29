@@ -1,16 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wildfire Monitoring System - Zimbabwe</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
-</head>
-<body>
+
     <header>
         <h5><i class="fas fa-fire"></i> Wildfire Monitoring System FMS - Zimbabwe</h5>
     </header>
@@ -18,118 +9,19 @@
     {% include 'navigation.html' %}
     
     <main> 
-    <div class="top-section"> 
-        <div class="map-container">
-<div id="map"></div>
-
-            </div>
-        </div> 
-    </div> 
-    
-    <!-- Bottom section now positioned absolutely -->
-    <div class="bottom-section" id="bottomSection"> 
-        <div class="card"> 
-            <div class="card-header"> 
-                <i class="fas fa-chart-line"></i> Fire Incidents Over Time 
-            </div> 
-            <div class="card-content"> 
-                Fire Trend Visualization Chart 
-            </div> 
-        </div> 
-        <div class="card"> 
-            <div class="card-header"> 
-                <i class="fas fa-chart-pie"></i> Fire Distribution by Province 
-            </div> 
-            <div class="card-content"> 
-                Province Distribution Pie Chart 
-            </div> 
-        </div> 
-    </div> 
-    
-    <!-- Toggle button moved outside and positioned absolutely -->
-    <button class="toggle-button" id="toggleButton"> 
-        <i class="fas fa-chevron-up" id="toggleIcon"></i> 
-        <span id="toggleText">Collapse Charts</span> 
-    </button> 
-</main>
+      {% include 'main_top.html' %}
+      {% include 'main_bottom.html' %}
+   
+   
+    </main>
     
     <aside>
-                  <div class="sidebar-title">ANALYTICS</div>
-                      <div class="sidebar-section">
-            <div class="sidebar-title">Current Status</div>
-            <div>Active Fires: 2s4</div>
-            <div>High Risk Areas: 8</div>
-        </div>
-
-        <div class="sidebar-section">
-            <div class="sidebar-title">Fire Impact overlay</div>
-        <div class="overlay-list mb-3">
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" id="settlementOverlay">
-                <label class="form-check-label" for="settlementOverlay">Settlement</label>
-            </div>
-
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" id="floodProneOverlay">
-                <label class="form-check-label" for="floodProneOverlay">Fire risk map</label>
-            </div>
-
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" id="landCoverOverlay">
-                <label class="form-check-label" for="landCoverOverlay">Land Cover</label>
-            </div>
-
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" id="ndviOverlay">
-                <label class="form-check-label" for="ndviOverlay">Road network</label>
-            </div>
-        </div>
-
-        </div>
-        <div class="sidebar-section">
-            <div class="sidebar-title">Fire Risk Forecasts</div>
-            <div>New fire in Mashonaland West</div>
-            <div>Fire spreading in Matabeleland North</div>
-        </div>
-
-        </div>
-        <div class="sidebar-section">
-            <div class="sidebar-title">Tools</div>
-        <div class="tool-list">
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" id="downloadMap">
-                <label class="form-check-label" for="downloadMap">Download Map</label>
-            </div>
-
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" id="toggleLegend">
-                <label class="form-check-label" for="toggleLegend">Show Legend</label>
-            </div>
-        </div>
+      {% include 'sidebar2.html' %}
     </aside>
     
     <footer>
         <small>Developed by Farai Marumbwa &copy; 2025 | maxmarumbwa@gmail.com</small>
     </footer>
+   
 
-    <script>
-        const toggleButton = document.getElementById('toggleButton');
-        const bottomSection = document.getElementById('bottomSection');
-        const toggleIcon = document.getElementById('toggleIcon');
-        const toggleText = document.getElementById('toggleText');
-        
-        toggleButton.addEventListener('click', function() {
-            bottomSection.classList.toggle('collapsed');
-            
-            if (bottomSection.classList.contains('collapsed')) {
-                toggleIcon.className = 'fas fa-chevron-down';
-                toggleText.textContent = 'Expand Charts';
-            } else {
-                toggleIcon.className = 'fas fa-chevron-up';
-                toggleText.textContent = 'Collapse Charts';
-            }
-        });
-    </script>
-</body>
-</html>
 {% endblock %}
