@@ -1,0 +1,402 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wildfire Monitoring System - Zimbabwe</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+    <style>
+        /* Additional styles for the navigation bar in sidebar */
+        .navbar {
+            background: linear-gradient(to bottom, #2c3e50, #4a6491);
+            color: white;
+            padding: 15px 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .navbar-title {
+            font-size: 18px;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .navbar-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .control-label {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .dropdown {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .dropdown-btn {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            transition: background-color 0.3s;
+        }
+
+        .dropdown-btn:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: white;
+            min-width: 200px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            z-index: 100;
+            border-radius: 4px;
+            overflow: hidden;
+            width: 100%;
+        }
+
+        .dropdown-content a {
+            color: #333;
+            padding: 10px 15px;
+            text-decoration: none;
+            display: block;
+            font-size: 14px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #f1f1f1;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .date-display {
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        /* Forecasts section styling */
+        .forecast-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .forecast-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            padding: 10px;
+            border-left: 3px solid #3498db;
+        }
+
+        .forecast-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+
+        .forecast-detail {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 3px;
+        }
+
+        /* Date range selector */
+        .date-range-selector {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin: 10px 0;
+        }
+
+        .date-btn {
+            padding: 6px 10px;
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: background-color 0.3s;
+            text-align: center;
+        }
+
+        .date-btn:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .date-btn.active {
+            background-color: #3498db;
+        }
+
+        .fire-season-selector {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .date-input {
+            padding: 6px 8px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 4px;
+            font-size: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .date-input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        /* Adjust existing sidebar styles */
+        aside {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .sidebar-section {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #2c3e50;
+            font-size: 16px;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h5><i class="fas fa-fire"></i> Wildfire Monitoring System FMS - Zimbabwe</h5>
+    </header>
+
+    <nav>
+        <div class="nav-item">
+            <a href="#"><i class="fas fa-home"></i> Dashboard</a>
+        </div>
+        <div class="nav-item">
+            <a href="#"><i class="fas fa-fire"></i> Active Fires</a>
+        </div>
+        <div class="nav-item">
+            <a href="#"><i class="fas fa-chart-line"></i> Statistics</a>
+        </div>
+        <div class="nav-item">
+            <a href="#"><i class="fas fa-map-marked-alt"></i> Risk Areas</a>
+        </div>
+        <div class="nav-item">
+            <a href="#"><i class="fas fa-bell"></i> Alerts</a>
+        </div>
+        <div class="nav-item">
+            <a href="#"><i class="fas fa-cog"></i> Settings</a>
+        </div>
+    </nav>
+
+    <main>
+        <div class="top-section">
+            <div class="map-container">
+                <div id="map"></div>
+            </div>
+        </div>
+
+        <!-- Bottom section now positioned absolutely -->
+        <div class="bottom-section" id="bottomSection">
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-chart-line"></i> Fire Incidents Over Time
+                </div>
+                <div class="card-content">
+                    Fire Trend Visualization Chart
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-chart-pie"></i> Fire Distribution by Province
+                </div>
+                <div class="card-content">
+                    Province Distribution Pie Chart
+                </div>
+            </div>
+        </div>
+
+        <!-- Toggle button moved outside and positioned absolutely -->
+        <button class="toggle-button" id="toggleButton">
+            <i class="fas fa-chevron-up" id="toggleIcon"></i>
+            <span id="toggleText">Collapse Charts</span>
+        </button>
+    </main>
+
+    <aside>
+        <!-- Navigation Bar in Sidebar -->
+        <div class="navbar">
+            <div class="navbar-title">Map Controls</div>
+            <div class="navbar-controls">
+                <div class="control-group">
+                    <span class="control-label">Map Options</span>
+                    <div class="dropdown">
+                        <button class="dropdown-btn">Layers <i class="fas fa-chevron-down"></i></button>
+                        <div class="dropdown-content">
+                            <a href="#">Human Settlement Layer</a>
+                            <a href="#">Protected Areas Layer</a>
+                            <a href="#">MODIS Land Cover</a>
+                            <a href="#">FUELS</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <span class="control-label">Forecasts</span>
+                    <div class="dropdown">
+                        <button class="dropdown-btn">Select Forecast <i class="fas fa-chevron-down"></i></button>
+                        <div class="dropdown-content">
+                            <a href="#">FIRE DANGER FORECAST</a>
+                            <a href="#">LIGHTNING FORECAST</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <span class="control-label">Current Date</span>
+                    <div class="date-display">25 Nov 2025</div>
+                </div>
+            </div>
+
+            <!-- Forecasts Section -->
+            <div class="section-title">Forecasts</div>
+            <div class="forecast-container">
+                <div class="forecast-card">
+                    <div class="forecast-title">FIRE DANGER FORECAST</div>
+                    <div class="forecast-detail">Source: ECMWF (8 km res.)</div>
+                    <div class="forecast-detail">Index: Fire Weather Index (FWI)</div>
+                </div>
+
+                <div class="forecast-card">
+                    <div class="forecast-title">LIGHTNING FORECAST</div>
+                    <div class="forecast-detail">Date: 25 Nov 2025</div>
+                </div>
+            </div>
+
+            <!-- Rapid Damage Assessment Section -->
+            <div class="section-title">Rapid Damage Assessment</div>
+
+            <div class="date-range-selector">
+                <button class="date-btn active">Last 1 Day</button>
+                <button class="date-btn">Last 7 Days</button>
+                <button class="date-btn">Last 30 Days</button>
+            </div>
+
+            <div class="fire-season-selector">
+                <span class="control-label">Fire Season</span>
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <span>From:</span>
+                    <input type="text" class="date-input" value="24 Nov 2025" style="flex: 1;">
+                </div>
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <span>To:</span>
+                    <input type="text" class="date-input" value="25 Nov 2025" style="flex: 1;">
+                </div>
+            </div>
+        </div>
+
+        <!-- Existing sidebar sections -->
+        <div class="sidebar-section">
+            <div class="sidebar-title">Current Status</div>
+            <div>Active Fires: 24</div>
+            <div>High Risk Areas: 8</div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-title">Recent Alerts</div>
+            <div>New fire in Mashonaland West</div>
+            <div>Fire spreading in Matabeleland North</div>
+        </div>
+    </aside>
+
+    <footer>
+        <small>Developed by Farai Marumbwa &copy; 2025 | maxmarumbwa@gmail.com</small>
+    </footer>
+
+    <script>
+        // Toggle functionality for charts
+        const toggleButton = document.getElementById('toggleButton');
+        const bottomSection = document.getElementById('bottomSection');
+        const toggleIcon = document.getElementById('toggleIcon');
+        const toggleText = document.getElementById('toggleText');
+
+        toggleButton.addEventListener('click', function () {
+            bottomSection.classList.toggle('collapsed');
+
+            if (bottomSection.classList.contains('collapsed')) {
+                toggleIcon.className = 'fas fa-chevron-down';
+                toggleText.textContent = 'Expand Charts';
+            } else {
+                toggleIcon.className = 'fas fa-chevron-up';
+                toggleText.textContent = 'Collapse Charts';
+            }
+        });
+
+        // Date range button functionality
+        document.querySelectorAll('.date-btn').forEach(button => {
+            button.addEventListener('click', function () {
+                // Remove active class from all buttons
+                document.querySelectorAll('.date-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+
+                // Add active class to clicked button
+                this.classList.add('active');
+            });
+        });
+    </script>
+</body>
+
+</html>
+{% endblock %}
