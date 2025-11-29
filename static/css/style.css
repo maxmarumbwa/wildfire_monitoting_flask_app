@@ -65,6 +65,8 @@ main {
     display: flex;
     flex-direction: column;
     background-color: white;
+    position: relative;
+    /* Add this */
 }
 
 .top-section {
@@ -89,20 +91,46 @@ main {
 }
 
 .bottom-section {
-    height: 250px;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 200px;
     background: #f8f9fa;
-    transition: height 0.3s ease;
+    transition: height 0.3s ease, transform 0.3s ease;
     padding: 15px;
     display: flex;
     gap: 15px;
     border-top: 2px solid #dee2e6;
     overflow: hidden;
+    z-index: 1000;
+    /* Increase this to bring to front */
+}
+
+.toggle-button {
+    position: absolute;
+    bottom: 220px;
+    right: 15px;
+    padding: 8px 15px;
+    background: #2c3e50;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    z-index: 1001;
+    /* Make button higher than bottom section */
 }
 
 .bottom-section.collapsed {
     height: 0;
     padding: 0;
     border-top: none;
+    transform: translateY(100%);
+    /* Add this to push down when collapsed */
 }
 
 .card {
@@ -140,25 +168,10 @@ main {
     justify-content: center;
     color: #6c757d;
     font-style: italic;
+
 }
 
-.toggle-button {
-    position: absolute;
-    bottom: 15px;
-    right: 15px;
-    padding: 8px 15px;
-    background: #2c3e50;
-    color: white;
-    border: none;
-    cursor: pointer;
-    border-radius: 4px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    z-index: 1000;
-    /* Add this line to bring button to front */
-}
+
 
 .toggle-button:hover {
     background: #1a252f;
@@ -200,7 +213,20 @@ footer {
 
 #map {
     width: 100%;
-    height: 100%;
-    border: 1px solid #7f7373ff;
+    height: 100vh;
+    border: 1px solid #7f7373ff
+}
 
+
+.map-container {
+    position: relative;
+    overflow: hidden;
+}
+
+.map-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    /* This ensures the image covers the container without distorting */
+    display: block;
 }

@@ -1,9 +1,16 @@
 {% extends "base.html" %}
 
 {% block content %}
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wildfire Monitoring System - Zimbabwe</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+</head>
 <body>
- 
     <header>
         <h1><i class="fas fa-fire"></i> Wildfire Monitoring System FMS - Zimbabwe</h1>
     </header>
@@ -29,38 +36,53 @@
         </div>
     </nav>
     
-    <main>
-        <div class="top-section">
-            <div class="map-container">
-                <div id="map"></div>
+    <main> 
+    <div class="top-section"> 
+        <div class="map-container">
+<div id="map"></div>
+
             </div>
-            <button class="toggle-button" id="toggleButton">
-                <i class="fas fa-chevron-up" id="toggleIcon"></i>
-                <span id="toggleText">Collapse Charts</span>
-            </button>
-        </div>
-        <div class="bottom-section" id="bottomSection">
-            <div class="card">
-                <div class="card-header">
-                    <i class="fas fa-chart-line"></i> Fire Incidents Over Time
-                </div>
-                <div class="card-content">
-                    Fire Trend Visualization Chart
-                </div>
-            </div>
-            <div class="card">
-                <div class="card-header">
-                    <i class="fas fa-chart-pie"></i> Fire Distribution by Province
-                </div>
-                <div class="card-content">
-                    Province Distribution Pie Chart
-                </div>
-            </div>
-        </div>
-    </main>
+        </div> 
+    </div> 
+    
+    <!-- Bottom section now positioned absolutely -->
+    <div class="bottom-section" id="bottomSection"> 
+        <div class="card"> 
+            <div class="card-header"> 
+                <i class="fas fa-chart-line"></i> Fire Incidents Over Time 
+            </div> 
+            <div class="card-content"> 
+                Fire Trend Visualization Chart 
+            </div> 
+        </div> 
+        <div class="card"> 
+            <div class="card-header"> 
+                <i class="fas fa-chart-pie"></i> Fire Distribution by Province 
+            </div> 
+            <div class="card-content"> 
+                Province Distribution Pie Chart 
+            </div> 
+        </div> 
+    </div> 
+    
+    <!-- Toggle button moved outside and positioned absolutely -->
+    <button class="toggle-button" id="toggleButton"> 
+        <i class="fas fa-chevron-up" id="toggleIcon"></i> 
+        <span id="toggleText">Collapse Charts</span> 
+    </button> 
+</main>
     
     <aside>
-
+        <div class="sidebar-section">
+            <div class="sidebar-title">Current Status</div>
+            <div>Active Fires: 24</div>
+            <div>High Risk Areas: 8</div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-title">Recent Alerts</div>
+            <div>New fire in Mashonaland West</div>
+            <div>Fire spreading in Matabeleland North</div>
+        </div>
     </aside>
     
     <footer>
