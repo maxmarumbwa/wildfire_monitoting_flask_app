@@ -1,9 +1,21 @@
-   <!-- 🌍 SIDEBAR -->
-        <div class="col-md-3 bg-light sidebar">
-            <div class="p-3">
-                <h7 class="text-danger">Active fire hotspots2000-2025</h7>
+    <nav>
+        <div class="nav-item sidebar-title">
+            <a href="#"><i class="fas fa-home"></i> Home</a>
+        </div>
 
-                <div class="mb-3">
+        <div class="nav-item sidebar-title">
+             <a href="#"><i class="fas fa-fire"></i> Active Fires</a>
+        </div>
+        <label class="form-label" >Filter By Province</label>
+        <select class="form-select" id="provinceSelect">
+          <option value="all">All Provinces</option>
+        </select>
+
+        <div class="nav-item sidebar-title">
+             <a href="#"><i class="fas fa-map-marked-alt"></i> Historical fires</a>
+        </div>
+             <label class="form-label">Filter By Season</label>               
+            <div class="mb-3">
                     <select class="form-select" id="yearSelect">
                         <option value="2003" selected>2003</option>
                         {% for year in range(2000, 2026) %}
@@ -11,7 +23,6 @@
                         {% endfor %}
                     </select>
                 </div>
-
                 <div class="mb-3">
                     <label class="form-label">Filter By Season</label>
                     <select class="form-select" id="seasonSelect">
@@ -20,29 +31,11 @@
                         <option value="wet">Wet Season</option>
                     </select>
                 </div>
-
-                <div class="mb-3">
-                    <label class="form-label">Filter By Province</label>
-                    <select class="form-select" id="provinceSelect">
-                        <option value="all">All Provinces</option>
-                    </select>
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label">Filter By District</label>
-                    <select class="form-select" id="districtSelect">
-                        <option value="all">All Districts</option>
-                    </select>
-                </div>
-
-                <hr>
-
-
-                <h8 class="text-danger">ACTIVE FIRES IN VIEW</h8>
-
-                <div class="p-2 bg-white rounded shadow-sm">
-                    <h7 id="activeFireCount" class="text-center text-danger mb-0">0</h7>
-                    <small class="text-muted d-block text-center">fires detected</small>
-                </div>
-            </div>
+        <div class="nav-item sidebar-title">
+         <a href="#"><i class="fas fa-cog"></i> Settings</a>
         </div>
+        <div>Fire detection alerts</div>      
+         <div>Fire danger index</div>
+
+
+    </nav>
