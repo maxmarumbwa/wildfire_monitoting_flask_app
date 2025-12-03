@@ -1,62 +1,37 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "base.html" %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Coordinates Settings</title>
+{% block content %}
 
-    <style>
-        /* LOCAL STYLING ONLY FOR THIS PAGE */
-        #settings {
-            display: flex !important;
-            width: 100%;
-            height: 100%;
-        }
+<header>
+    <h5><i class="fas fa-fire"></i> Wildfire Monitoring System FMS - Zimbabwe</h5>
+</header>
 
-        #left-settings {
-            width: 25%;
-            background: #1e1e1e;
-            color: white;
-            padding: 20px;
-            box-sizing: border-box;
-            height: 80vh;
-        }
-
-        #main-settings {
-            width: 75%;
-            background: rgb(216, 175, 175);
-            padding: 20px;
-            box-sizing: border-box;
-            height: 80vh;
-        }
-
-        header {
-            padding: 10px 20px;
-            background: #f0f0f0;
-            border-bottom: 1px solid #ddd;
-        }
-    </style>
-
-</head>
-
-<body>
-
-    <div class="container">
-        <header>
-            <h5><i class="fas fa-fire"></i> Wildfire Monitoring System FMS - Zimbabwe</h5>
-        </header>
-        <div id="settings">
-            <nav id="left-settings">
-                Navbar
-            </nav>
-
-            <main id="main-settings">
-                FM Settings go here
-            </main>
-        </div>
+<nav>
+    <div class="nav-item sidebar-title">
+        <a href="#"><i class="fas fa-home"></i> Home</a>
     </div>
 
-</body>
+    <div class="nav-item sidebar-title">
+        <a href="#"><i class="fas fa-cog"></i> Settings</a>
+    </div>
+    <div>Fire detection alerts</div>
+    <a href="{{ url_for('coordinates_settings') }}">Weather & FWI Coordinates</a>
 
-</html>
+
+</nav>
+
+<main>
+    Table for settings here
+
+
+
+</main>
+
+<aside>
+
+</aside>
+
+{% include "footer.html" %}
+
+
+{% endblock %}
