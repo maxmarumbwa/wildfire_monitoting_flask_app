@@ -26,5 +26,10 @@ def admin1_boundary():
     return jsonify(data)
 
 
+@app.route("/coordinates-settings")
+def coordinates_settings():
+    return render_template("coordinates_settings.html")
+
+
 if __name__ == "__main__":
     app.run(debug=True)

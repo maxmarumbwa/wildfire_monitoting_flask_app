@@ -414,3 +414,23 @@ footer {
     padding-bottom: 5px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
+
+
+/* Settings styles */
+#settings {
+    display: grid;
+    grid-template-columns: 25% 75%;
+    height: 100%;
+}
+
+/* Optional styling */
+#left-settings {
+    padding: 20px;
+    background: #1e1e1e;
+    color: white;
+}
+
+#main-settings {
+    padding: 20px;
+    background: #ffffff;
+}
