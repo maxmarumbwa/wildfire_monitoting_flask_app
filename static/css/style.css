@@ -1,3 +1,13 @@
+/* global styles */
+/* Redirect link styles */
+.redirect,
+.redirect * {
+    text-decoration: none !important;
+    color: inherit;
+}
+
+
+
 * {
     box-sizing: border-box;
     padding: 0;
@@ -133,6 +143,7 @@ main {
     transform: translateY(100%);
     /* Add this to push down when collapsed */
 }
+
 
 .card {
     flex: 1;

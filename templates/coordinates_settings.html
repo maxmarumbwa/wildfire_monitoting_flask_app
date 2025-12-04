@@ -3,17 +3,16 @@
 {% block content %}
 
 <body>
+    fm
     <div class="settings-container">
-        <header>
-            <h5><i class="fas fa-fire"></i> Wildfire Monitoring System FMS - Zimbabwe</h5>
-        </header>
+        {% include "header.html" %}
         <div id="settings">
             <nav id="left-settings" class="sidebar-title">
                 <div class="nav-item sidebar-title">
                     <a href="#"><i class="fas fa-cog"></i> Settings</a>
                 </div>
                 <div>Fire detection alerts</div>
-                <a href="{{ url_for('coordinates_settings') }}">Weather & FWI Coordinates</a>
+                <a class="redirect" href="{{ url_for('coordinates_settings') }}">Weather & FWI Coordinates</a>
             </nav>
 
             <main id="main-settings">

@@ -31,11 +31,7 @@
                         <option value="wet">Wet Season</option>
                     </select>
                 </div>
-        <div class="nav-item sidebar-title">
-         <a href="#"><i class="fas fa-cog"></i> Settings</a>
-        </div>
-        <div>Fire detection alerts</div>      
-         <a href="{{ url_for('coordinates_settings') }}">Weather & FWI Coordinates</a>
-
+         <div class="sidebar-title"><i class="fas fa-cog"></i> <a class ="redirect" href="{{ url_for('coordinates_settings') }}"> Settings</a>
+</div>
 
     </nav>
