@@ -3,7 +3,6 @@
 {% block content %}
 
 <body>
-    fm
     <div class="settings-container">
         {% include "header.html" %}
         <div id="settings">
@@ -17,37 +16,49 @@
 
             <main id="main-settings">
                 <div class="container">
-                    <h2>Dynamic Coordinates Table with Name</h2>
-                    <p>Add/remove rows, set a name for each point, then click "Get Weather".</p>
-
+                    <h2>Uplate Coordinates for FWI data</h2>
                     <table id="coordsTable">
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th>Name</th>
                                 <th>Latitude</th>
                                 <th>Longitude</th>
-                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
                                 <td>1</td>
-                                <td><input type="text" value="Point 1"></td>
                                 <td><input type="number" step="0.0001" value="-15.0"></td>
                                 <td><input type="number" step="0.0001" value="27.0"></td>
-                                <td>
-                                    <button class="btn-add">+</button>
-                                    <button class="btn-remove">-</button>
-                                </td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td><input type="number" step="0.0001" value="-16.0"></td>
+                                <td><input type="number" step="0.0001" value="28.0"></td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td><input type="number" step="0.0001" value="-14.5"></td>
+                                <td><input type="number" step="0.0001" value="26.5"></td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td><input type="number" step="0.0001" value="-15.5"></td>
+                                <td><input type="number" step="0.0001" value="27.5"></td>
+                            </tr>
+                            <tr>
+                                <td>5</td>
+                                <td><input type="number" step="0.0001" value="-15.2"></td>
+                                <td><input type="number" step="0.0001" value="27.2"></td>
                             </tr>
                         </tbody>
                     </table>
 
-                    <button id="getWeatherBtn" class="btn-get">Get Weather for All Points</button>
+                    <button id="getWeatherBtn">Get Weather for All Points</button>
 
                     <h3>Weather Results:</h3>
                     <div id="resultsContainer">Weather data will appear here.</div>
+
                 </div>
             </main>
         </div>
