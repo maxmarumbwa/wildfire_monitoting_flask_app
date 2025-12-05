@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Weather Lookup</title>
+    <style>
+        body {
+            font-family: Arial;
+            padding: 20px;
+            background: #f3f3f3;
+        }
+        .container {
+            width: 400px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            margin-bottom: 10px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background: #1e90ff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        pre {
+            background: #222;
+            color: #0f0;
+            padding: 10px;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h2>Get Weather by Coordinates</h2>
+
+        <form id="weatherForm">
+            <label>Latitude</label>
+            <input type="text" id="lat" placeholder="-15" required>
+
+            <label>Longitude</label>
+            <input type="text" id="lon" placeholder="27" required>
+
+            <button type="submit">Get Weather</button>
+        </form>
+
+        <h3>API Response:</h3>
+        <pre id="output">Waiting...</pre>
+    </div>
+
+    <script>
+        document.getElementById("weatherForm").addEventListener("submit", function(e){
+            e.preventDefault();
+
+            const lat = document.getElementById("lat").value;
+            const lon = document.getElementById("lon").value;
+
+            fetch("/get_weather", {
+                method: "POST",
+                headers: {"Content-Type": "application/x-www-form-urlencoded"},
+                body: `lat=${lat}&lon=${lon}`
+            })
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById("output").textContent = JSON.stringify(data, null, 4);
+            })
+            .catch(err => {
+                document.getElementById("output").textContent = "Error fetching data.";
+            });
+        });
+    </script>
+
+</body>

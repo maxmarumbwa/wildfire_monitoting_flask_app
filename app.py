@@ -1,7 +1,16 @@
-from flask import Flask, render_template, jsonify
+from flask import Flask, render_template, jsonify, request
 import json, os
+import requests
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
 
 app = Flask(__name__)
+
+# Load API key and base URL from .env
+API_KEY = os.getenv("OWM_API_KEY")
+BASE_URL = os.getenv("OWM_BASE_URL")
 
 
 @app.route("/")
@@ -29,6 +38,29 @@ def admin1_boundary():
 @app.route("/coordinates-settings")
 def coordinates_settings():
     return render_template("coordinates_settings.html")
+
+
+# get data from external API -openwathermap
+API_KEY = "a7f700140994b6b582c210f0686e3e67"  # your OWM API key
+
+
+@app.route("/get_temp")
+def home():
+    return render_template("get_temp.html")
+
+
+@app.route("/get_weather", methods=["POST"])
+def get_weather():
+    lat = request.form.get("lat")
+    lon = request.form.get("lon")
+
+    if not lat or not lon:
+        return jsonify({"error": "Missing coordinates"}), 400
+
+    url = f"https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={API_KEY}"
+
+    data = requests.get(url).json()
+    return jsonify(data)
 
 
 if __name__ == "__main__":

@@ -60,6 +60,70 @@
                     <div id="resultsContainer">Weather data will appear here.</div>
 
                 </div>
+                <script>
+                    document.getElementById("getWeatherBtn").addEventListener("click", function () {
+                        let table = document.getElementById("coordsTable").getElementsByTagName("tbody")[0];
+                        let rows = table.getElementsByTagName("tr");
+                        let coords = [];
+
+                        for (let r of rows) {
+                            let lat = r.cells[1].children[0].value;
+                            let lon = r.cells[2].children[0].value;
+                            if (lat && lon) {
+                                coords.push({ lat: lat, lon: lon });
+                            }
+                        }
+
+                        fetch("/get_weather_multi", {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({ coords: coords })
+                        })
+                            .then(res => res.json())
+                            .then(data => renderResults(data))
+                            .catch(err => {
+                                document.getElementById("resultsContainer").innerHTML = "Error fetching data.";
+                            });
+                    });
+
+                    function renderResults(results) {
+                        let html = `
+        <table>
+            <tr>
+                <th>#</th>
+                <th>Latitude</th>
+                <th>Longitude</th>
+                <th>Location</th>
+                <th>Weather</th>
+                <th>Temp (°C)</th>
+                <th>Humidity</th>
+                <th>Wind (m/s)</th>
+            </tr>
+        `;
+
+                        results.forEach((item, index) => {
+                            let d = item.data;
+                            let tempC = (d.main.temp - 273.15).toFixed(2);
+
+                            html += `
+            <tr>
+                <td>${index + 1}</td>
+                <td>${item.lat}</td>
+                <td>${item.lon}</td>
+                <td>${d.name || "Unknown"}, ${d.sys.country || ""}</td>
+                <td>${d.weather[0].description}</td>
+                <td>${tempC}</td>
+                <td>${d.main.humidity}%</td>
+                <td>${d.wind.speed}</td>
+            </tr>
+            `;
+                        });
+
+                        html += `</table>`;
+                        document.getElementById("resultsContainer").innerHTML = html;
+                    }
+                </script>
+
             </main>
         </div>
     </div>
