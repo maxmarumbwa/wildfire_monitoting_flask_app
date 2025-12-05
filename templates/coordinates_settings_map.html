@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<body>
+<div class="container">
+    {% include "header.html" %}
+    <h2>Select Location on Map</h2>
+    <div id="map"></div>
+
+    <form id="weatherForm">
+        <label>Latitude</label>
+        <input type="text" id="lat" readonly>
+
+        <label>Longitude</label>
+        <input type="text" id="lon" readonly>
+
+        <button type="submit">Get Weather</button>
+    </form>
+
+    <h3>API Response:</h3>
+    <pre id="output">Select a point on the map...</pre>
+</div>
+
+<script>
+    // Initialize Map
+    var map = L.map('map').setView([-15, 27], 5);
+
+    // Add OpenStreetMap Basemap
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 18
+    }).addTo(map);
+
+    var marker;
+
+    // On Map Click
+    map.on('click', function(e) {
+        var lat = e.latlng.lat.toFixed(5);
+        var lon = e.latlng.lng.toFixed(5);
+
+        document.getElementById("lat").value = lat;
+        document.getElementById("lon").value = lon;
+
+        // Place marker
+        if (marker) {
+            map.removeLayer(marker);
+        }
+        marker = L.marker([lat, lon]).addTo(map);
+    });
+
+    // Submit Weather Request
+    document.getElementById("weatherForm").addEventListener("submit", function(e) {
+        e.preventDefault();
+
+        const lat = document.getElementById("lat").value;
+        const lon = document.getElementById("lon").value;
+
+        fetch("/get_weather", {
+            method: "POST",
+            headers: {"Content-Type": "application/x-www-form-urlencoded"},
+            body: `lat=${lat}&lon=${lon}`
+        })
+        .then(res => res.json())
+        .then(data => {
+            document.getElementById("output").textContent = JSON.stringify(data, null, 4);
+        })
+        .catch(err => {
+            document.getElementById("output").textContent = "Error fetching data.";
+        });
+    });
+</script>
+
+</body>
+
+   
+
+{% include 'footer.html' %}
+
+{% endblock %}

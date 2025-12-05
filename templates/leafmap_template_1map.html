@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Leafmap</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <style>
+        #map {
+            height: 500px;
+            margin-bottom: 220px;
+            border-radius: 8px;
+            background: #c6b679ff;
+            width: 600px;
+         }
+        .container {
+             height: 600px;
+            width: 600px;
+            margin: auto;
+            background: #dbe9d7ff;
+            padding: 20px;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Fire location Map</h2>
+        <div id="map"></div>
+    </div>
+
+    <script>
+    // Initialize Map
+    var map = L.map('map').setView([-19, 29], 5);
+
+    // Add OpenStreetMap Basemap
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 18
+    }).addTo(map);
+    </script>
+
+</body>
+</html>

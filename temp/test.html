@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Weather Lookup with Leaflet (No Flask)</title>
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+    <style>
+        body {
+            font-family: Arial;
+            background: #f7f5ee;
+            padding: 20px;
+        }
+
+        #map {
+            height: 400px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+        }
+
+        .container {
+            width: 500px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        input,
+        button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 8px;
+            font-size: 15px;
+        }
+
+        button {
+            background: #1e90ff;
+            color: white;
+            border: none;
+        }
+
+        pre {
+            background: #222;
+            color: #0f0;
+            padding: 10px;
+            margin-top: 10px;
+            white-space: pre-wrap;
+        }
+    </style>
+
+</head>
+
+<body>
+    <div class="container">
+        <h2>Select Location on Map</h2>
+
+        <div id="map"></div>
+
+        <label>Latitude</label>
+        <input type="text" id="lat" readonly>
+
+        <label>Longitude</label>
+        <input type="text" id="lon" readonly>
+
+        <button onclick="getWeather()">Get Weather</button>
+
+        <h3>API Response:</h3>
+        <pre id="output">Click on the map to select a location...</pre>
+    </div>
+
+    <script>
+        // Your OpenWeatherMap API Key
+        const API_KEY = "YOUR_API_KEY_HERE";
+
+        // Initialize Map
+        var map = L.map('map').setView([-17.82, 31.05], 6); // Start centered over Zimbabwe
+
+        // Add OpenStreetMap Basemap
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 18
+        }).addTo(map);
+
+        var marker;
+
+        // When user clicks on the map
+        map.on('click', function (e) {
+            const lat = e.latlng.lat.toFixed(5);
+            const lon = e.latlng.lng.toFixed(5);
+
+            document.getElementById("lat").value = lat;
+            document.getElementById("lon").value = lon;
+
+            // Place marker
+            if (marker) map.removeLayer(marker);
+            marker = L.marker([lat, lon]).addTo(map);
+        });
+
+        // Call OpenWeatherMap API
+        function getWeather() {
+            const lat = document.getElementById("lat").value;
+            const lon = document.getElementById("lon").value;
+
+            if (!lat || !lon) {
+                document.getElementById("output").textContent =
+                    "Select a point on the map first.";
+                return;
+            }
+
+            const url =
+                `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=e17b48a02df3f0b1cb140c20c0c2582e`;
+
+            fetch(url)
+                .then(res => res.json())
+                .then(data => {
+                    document.getElementById("output").textContent =
+                        JSON.stringify(data, null, 4);
+                })
+                .catch(err => {
+                    document.getElementById("output").textContent = "Error fetching data.";
+                });
+        }
+    </script>
+
+</body>
+
+</html>

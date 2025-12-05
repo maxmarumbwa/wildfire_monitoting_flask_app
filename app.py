@@ -2,6 +2,7 @@ from flask import Flask, render_template, jsonify, request
 import json, os
 import requests
 from dotenv import load_dotenv
+import leafmap
 
 # Load environment variables
 load_dotenv()
@@ -40,12 +41,19 @@ def coordinates_settings():
     return render_template("coordinates_settings.html")
 
 
+# Get weather data based on coordinates
+
+
 @app.route("/get_temp")
 def home():
     return render_template("get_temp.html")
 
 
-# Get weather data based on coordinates
+@app.route("/coordinates_settings_map")
+def coordinates_settings_map():
+    return render_template("coordinates_settings_map.html")
+
+
 @app.route("/get_weather", methods=["POST"])
 def get_weather():
     lat = request.form.get("lat")
@@ -58,6 +66,20 @@ def get_weather():
 
     data = requests.get(url).json()
     return jsonify(data)
+
+
+@app.route("/leafmap")
+def leafmap_home():
+    # Create a Leafmap map
+    m = leafmap.Map(center=[-19, 29], zoom=6)
+
+    # OPTIONAL: Add a basemap
+    m.add_basemap("HYBRID")
+
+    # Export map to HTML file inside templates/
+    m.to_html("templates/fire_map.html")
+
+    return render_template("fire_map.html")
 
 
 if __name__ == "__main__":
