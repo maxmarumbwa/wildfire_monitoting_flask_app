@@ -41,7 +41,6 @@ def coordinates_settings():
 
 
 # get data from external API -openwathermap
-API_KEY = "a7f700140994b6b582c210f0686e3e67"  # your OWM API key
 
 
 @app.route("/get_temp")
