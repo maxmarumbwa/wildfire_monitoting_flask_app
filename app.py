@@ -40,9 +40,6 @@ def coordinates_settings():
     return render_template("coordinates_settings.html")
 
 
-# get data from external API -openwathermap
-
-
 @app.route("/get_temp")
 def home():
     return render_template("get_temp.html")
