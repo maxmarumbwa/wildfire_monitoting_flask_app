@@ -45,6 +45,7 @@ def home():
     return render_template("get_temp.html")
 
 
+# Get weather data based on coordinates
 @app.route("/get_weather", methods=["POST"])
 def get_weather():
     lat = request.form.get("lat")
