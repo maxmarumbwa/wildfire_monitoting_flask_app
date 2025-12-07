@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Fire Hotspots</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        #map {
+            height: 500px;
+            width: 100%;
+            border: 1px solid #ccc;
+            margin-top: 10px;
+        }
+        .controls {
+            margin: 10px 0;
+            padding: 10px;
+            background: #f5f5f5;
+            border-radius: 5px;
+        }
+        .radio-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 5px;
+        }
+        label {
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h2>Fire Hotspots</h2>
+    
+    <div class="controls">
+        <strong>Select Map Layer:</strong>
+        <div class="radio-group">
+            {% for file in geojson_files %}
+            <label>
+                <input type="radio" name="geojsonFile" value="{{ file }}" 
+                       {% if loop.first %}checked{% endif %}>
+                {{ file.replace('.geojson', '').replace('_', ' ').title() }}
+            </label>
+            {% endfor %}
+        </div>
+    </div>
+    
+    <div id="map"></div>
+
+    <script>
+        // Initialize map
+        var map = L.map('map').setView([-17, 30], 6);
+        
+        // Add basemap
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 18,
+            attribution: '© OpenStreetMap'
+        }).addTo(map);
+        
+        // Current GeoJSON layer
+        var currentLayer = null;
+        
+        // Function to load GeoJSON
+        function loadGeoJSON(filename) {
+            // Remove existing layer
+            if (currentLayer) {
+                map.removeLayer(currentLayer);
+            }
+            
+            // Show loading state
+            map.spin(true);
+            
+            // Load new GeoJSON
+            fetch('/data/' + filename)
+                .then(res => {
+                    if (!res.ok) throw new Error('File not found');
+                    return res.json();
+                })
+                .then(data => {
+                    currentLayer = L.geoJSON(data, {
+                        style: {
+                            color: '#3388ff',
+                            weight: 2,
+                            fillOpacity: 0.1
+                        }
+                    }).addTo(map);
+                    
+                    map.fitBounds(currentLayer.getBounds());
+                    map.spin(false);
+                })
+                .catch(err => {
+                    console.error('Error loading GeoJSON:', err);
+                    alert('Error loading map layer');
+                    map.spin(false);
+                });
+        }
+        
+        // Simple loading indicator
+        map.spin = function(state) {
+            var spinner = document.getElementById('map-spinner');
+            if (state && !spinner) {
+                spinner = document.createElement('div');
+                spinner.id = 'map-spinner';
+                spinner.innerHTML = 'Loading...';
+                spinner.style.cssText = `
+                    position: absolute; top: 50%; left: 50%; 
+                    transform: translate(-50%, -50%);
+                    background: white; padding: 10px; border-radius: 5px;
+                    z-index: 1000; box-shadow: 0 0 10px rgba(0,0,0,0.2);
+                `;
+                map.getContainer().appendChild(spinner);
+            } else if (!state && spinner) {
+                spinner.remove();
+            }
+        };
+        
+        // Event listeners for radio buttons
+        document.querySelectorAll('input[name="geojsonFile"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                if (this.checked) {
+                    loadGeoJSON(this.value);
+                }
+            });
+        });
+        
+        // Load initial layer
+        var initialFile = document.querySelector('input[name="geojsonFile"]:checked').value;
+        loadGeoJSON(initialFile);
+    </script>
+</body>
+</html>
