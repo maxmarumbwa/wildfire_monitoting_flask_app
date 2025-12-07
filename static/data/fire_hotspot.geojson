@@ -1,0 +1,556 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "brightness": 326,
+        "acq_date": "2000-11-01",
+        "acq_time": "0830",
+        "satellite": "Terra",
+        "frp": 13.1,
+        "daynight": "D",
+        "severity": "low"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          29.5846,
+          -16.3505
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "brightness": 315.4,
+        "acq_date": "2000-11-01",
+        "acq_time": "0830",
+        "satellite": "Terra",
+        "frp": 13,
+        "daynight": "D",
+        "severity": "low"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          29.9458,
+          -18.2376
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "brightness": 328.4,
+        "acq_date": "2000-11-01",
+        "acq_time": "0831",
+        "satellite": "Terra",
+        "frp": 20.2,
+        "daynight": "D",
+        "severity": "medium"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          31.0114,
+          -19.0558
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "brightness": 318.4,
+        "acq_date": "2000-11-01",
+        "acq_time": "0831",
+        "satellite": "Terra",
+        "frp": 14.5,
+        "daynight": "D",
+        "severity": "low"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          32.8926,
+          -19.8262
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "brightness": 326.2,
+        "acq_date": "2000-11-01",
+        "acq_time": "0831",
+        "satellite": "Terra",
+        "frp": 26.6,
+        "daynight": "D",
+        "severity": "medium"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          32.9043,
+          -19.8278
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "brightness": 324.3,
+        "acq_date": "2000-11-01",
+        "acq_time": "0831",
+        "satellite": "Terra",
+        "frp": 11.4,
+        "daynight": "D",
+        "severity": "low"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          31.0063,
+          -19.9917
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "brightness": 333.1,
+        "acq_date": "2000-11-01",
+        "acq_time": "0831",
+        "satellite": "Terra",
+        "frp": 18.3,
+        "daynight": "D",
+        "severity": "medium"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          31.0033,
+          -20.1018
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "brightness": 330.5,
+        "acq_date": "2000-11-01",
+        "acq_time": "0831",
+        "satellite": "Terra",
+        "frp": 15.3,
+        "daynight": "D",
+        "severity": "medium"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          31.0131,
+          -20.1032
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "brightness": 348,
+        "acq_date": "2000-11-01",
+        "acq_time": "0831",
+        "satellite": "Terra",
+        "frp": 47.5,
+        "daynight": "D",
+        "severity": "high"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          31.7458,
+          -20.296
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "brightness": 355.7,
+        "acq_date": "2000-11-01",
+        "acq_time": "0831",
+        "satellite": "Terra",
+        "frp": 66,
+        "daynight": "D",
+        "severity": "high"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          31.7561,
+          -20.2974
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "brightness": 327.9,
+        "acq_date": "2000-11-01",
+        "acq_time": "0831",
+        "satellite": "Terra",
+        "frp": 9.9,
+        "daynight": "D",
+        "severity": "low"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          30.6065,
+          -20.3028
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "brightness": 329.2,
+        "acq_date": "2000-11-01",
+        "acq_time": "0831",
+        "satellite": "Terra",
+        "frp": 8.3,
+        "daynight": "D",
+        "severity": "low"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          32.1581,
+          -20.6984
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "brightness": 338,
+        "acq_date": "2000-11-01",
+        "acq_time": "0831",
+        "satellite": "Terra",
+        "frp": 24.9,
+        "daynight": "D",
+        "severity": "medium"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          31.9147,
+          -20.9606
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "brightness": 369.1,
+        "acq_date": "2000-11-01",
+        "acq_time": "0831",
+        "satellite": "Terra",
+        "frp": 111,
+        "daynight": "D",
+        "severity": "high"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          31.9133,
+          -20.97
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "brightness": 333.3,
+        "acq_date": "2000-11-01",
+        "acq_time": "0831",
+        "satellite": "Terra",
+        "frp": 17.6,
+        "daynight": "D",
+        "severity": "medium"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          31.924,
+          -20.9715
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "brightness": 324.4,
+        "acq_date": "2000-11-01",
+        "acq_time": "0831",
+        "satellite": "Terra",
+        "frp": 7.9,
+        "daynight": "D",
+        "severity": "low"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          31.9092,
+          -20.9985
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "brightness": 330.8,
+        "acq_date": "2000-11-01",
+        "acq_time": "0831",
+        "satellite": "Terra",
+        "frp": 17.7,
+        "daynight": "D",
+        "severity": "medium"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          31.8917,
+          -21.3919
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "brightness": 322.5,
+        "acq_date": "2000-11-02",
+        "acq_time": "0736",
+        "satellite": "Terra",
+        "frp": 118,
+        "daynight": "D",
+        "severity": "high"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          31.857,
+          -21.4226
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "brightness": 338,
+        "acq_date": "2000-11-02",
+        "acq_time": "0736",
+        "satellite": "Terra",
+        "frp": 309.9,
+        "daynight": "D",
+        "severity": "high"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          31.8523,
+          -21.4403
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "brightness": 340.4,
+        "acq_date": "2000-11-02",
+        "acq_time": "0736",
+        "satellite": "Terra",
+        "frp": 342,
+        "daynight": "D",
+        "severity": "high"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          31.8455,
+          -21.4368
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "brightness": 316.7,
+        "acq_date": "2000-11-02",
+        "acq_time": "0913",
+        "satellite": "Terra",
+        "frp": 45.5,
+        "daynight": "D",
+        "severity": "high"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          29.1441,
+          -18.4382
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "brightness": 322.6,
+        "acq_date": "2000-11-02",
+        "acq_time": "0914",
+        "satellite": "Terra",
+        "frp": 107.2,
+        "daynight": "D",
+        "severity": "high"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          30.413,
+          -19.4087
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "brightness": 300.7,
+        "acq_date": "2000-11-02",
+        "acq_time": "2125",
+        "satellite": "Terra",
+        "frp": 25,
+        "daynight": "N",
+        "severity": "medium"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          30.1667,
+          -17.3558
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "brightness": 340.7,
+        "acq_date": "2000-11-03",
+        "acq_time": "0819",
+        "satellite": "Terra",
+        "frp": 28.8,
+        "daynight": "D",
+        "severity": "medium"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          31.2591,
+          -21.638
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "brightness": 320.2,
+        "acq_date": "2000-11-04",
+        "acq_time": "0901",
+        "satellite": "Terra",
+        "frp": 52,
+        "daynight": "D",
+        "severity": "high"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          30.7549,
+          -17.1086
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "brightness": 314.2,
+        "acq_date": "2000-11-04",
+        "acq_time": "0901",
+        "satellite": "Terra",
+        "frp": 35.9,
+        "daynight": "D",
+        "severity": "high"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          31.9514,
+          -17.611
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "brightness": 326,
+        "acq_date": "2000-11-04",
+        "acq_time": "0901",
+        "satellite": "Terra",
+        "frp": 13.9,
+        "daynight": "D",
+        "severity": "low"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          26.1818,
+          -18.0748
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "brightness": 315.7,
+        "acq_date": "2000-11-04",
+        "acq_time": "0901",
+        "satellite": "Terra",
+        "frp": 32.5,
+        "daynight": "D",
+        "severity": "high"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          31.0303,
+          -19.3227
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "brightness": 319,
+        "acq_date": "2000-11-04",
+        "acq_time": "0901",
+        "satellite": "Terra",
+        "frp": 48.4,
+        "daynight": "D",
+        "severity": "high"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          31.0595,
+          -19.3256
+        ]
+      }
+    }
+  ]
+}

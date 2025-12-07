@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Fire Hotspots</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <style>
+        #map {
+            height: 500px;
+            width: 80%;
+            margin: auto;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+
+<body>
+    <h2 style="text-align:center;">Fire Hotspots</h2>
+    <div id="map"></div>
+
+    <script>
+        var map = L.map('map').setView([-17, 30], 6);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18 }).addTo(map);
+
+
+        // Function to assign color based on FRP - tenary operato
+        function getColor(frp) {
+            return frp > 50 ? '#800026' :
+                frp > 30 ? '#BD0026' :
+                    frp > 15 ? '#E31A1C' :
+                        frp > 5 ? '#FC4E2A' :
+                            '#FD8D3C';
+        }
+        // Load GeoJSON point data 
+        fetch('../data/fire_hotspot.geojson')
+            .then(res => res.json())
+            .then(data => {
+                L.geoJSON(data, {
+                    pointToLayer: function (feature, latlng) {
+                        var circle = L.circleMarker(latlng, {
+                            radius: 9,
+                            fillColor: getColor(feature.properties.frp),
+                            color: '#000',       // border color (black)
+                            weight: 0.5,
+
+                            fillOpacity: 0.85
+                        });
+                        circle.bindPopup(
+                            "<b>Fire Hotspot</b><br>" +
+                            "FRP: " + feature.properties.frp + "<br>" +
+                            "Brightness: " + feature.properties.brightness + "<br>" +
+                            "Date: " + feature.properties.acq_date + "<br>" +
+                            "Time: " + feature.properties.acq_time + "<br>" +
+                            "Satellite: " + feature.properties.satellite + "<br>" +
+                            "Day/Night: " + feature.properties.daynight + "<br>" +
+                            "Severity: " + feature.properties.severity
+                        );
+                        return circle;
+                    }
+                }).addTo(map);
+            });
+    </script>
+
+</body>
+
+</html>
