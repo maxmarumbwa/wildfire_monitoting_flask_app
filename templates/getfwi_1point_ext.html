@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Weather Lookup</title>
+</head>
+
+<body>
+    <div class="container">
+        <h2>Get Weather by Coordinates</h2>
+
+        <form id="weatherForm" onsubmit="event.preventDefault(); getWeather();">
+            <label>Latitude</label>
+            <input type="text" id="lat" name="lat" placeholder="-15" required>
+
+            <label>Longitude</label>
+            <input type="text" id="lon" name="lon" placeholder="27" required>
+
+            <button type="submit">Get Weather</button>
+        </form>
+
+        <pre id="output">Waiting...</pre>
+    </div>
+
+    <script>
+        function getWeather() {
+            const lat = document.getElementById("lat").value;
+            const lon = document.getElementById("lon").value;
+
+            fetch("/get_weather", {
+                method: "POST",
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                body: `lat=${lat}&lon=${lon}`
+            })
+                .then(res => res.json())
+                .then(data => {
+
+                    document.getElementById("output").textContent =
+                        JSON.stringify(data, null, 2);
+
+                    const payload = {
+                        sea_level: data.main.sea_level,
+                        temp_min: data.main.temp_min,
+                        wind_speed: data.wind.speed
+                    };
+
+                    return fetch("/save_weather", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(payload)
+                    });
+                })
+                .then(() => {
+                    window.location.href = "/weather_summary";
+                });
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Weather Summary</title>
+    <style>
+        body {
+            font-family: Arial;
+            background: #f3f3f3;
+            padding: 30px;
+        }
+        .box {
+            width: 400px;
+            margin: auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        li {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="box">
+    <h2>Weather Summary</h2>
+
+    {% if weather %}
+    <ul>
+        <li><strong>Sea Level Pressure:</strong> {{ weather.sea_level }} hPa</li>
+        <li><strong>Min Temperature:</strong>
+            {{ (weather.temp_min - 273.15)|round(1) }} °C
+        </li>
+        <li><strong>Wind Speed:</strong> {{ weather.wind_speed }} m/s</li>
+    </ul>
+    {% else %}
+    <p>No weather data found.</p>
+    {% endif %}
+</div>
+
+</body>
+</html>

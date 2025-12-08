@@ -1,4 +1,4 @@
-from flask import Flask, render_template, jsonify, request
+from flask import Flask, render_template, jsonify, request, session
 import json, os
 import requests
 from dotenv import load_dotenv
@@ -7,6 +7,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 app = Flask(__name__)
+app.secret_key = "dev-secret-key"  # REQUIRED for sessions
 
 # Load API key and base URL from .env
 API_KEY = os.getenv("OWM_API_KEY")
@@ -41,11 +42,16 @@ def coordinates_settings():
 
 
 # Get weather data based on coordinates
-
-
+# local page to get FWI for 1 point
 @app.route("/getfwi_1point")
 def home():
     return render_template("getfwi_1point.html")
+
+
+# display results external pages
+@app.route("/getfwi_1point_ext")
+def weather_ext():
+    return render_template("getfwi_1point_ext.html")
 
 
 @app.route("/coordinates_settings_map")
@@ -65,6 +71,18 @@ def get_weather():
 
     data = requests.get(url).json()
     return jsonify(data)
+
+
+# post weather data to external pages
+@app.route("/weather_summary")
+def weather_summary():
+    return render_template("weather_summary.html", weather=session.get("weather"))
+
+
+@app.route("/save_weather", methods=["POST"])
+def save_weather():
+    session["weather"] = request.json
+    return jsonify({"status": "saved"})
 
 
 if __name__ == "__main__":
