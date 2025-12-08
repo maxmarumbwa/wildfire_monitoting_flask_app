@@ -36,8 +36,8 @@
         }
 
         pre {
-            background: #222;
-            color: #0f0;
+            background: #eae4e4;
+            color: rgb(15, 16, 15);
             padding: 10px;
             margin-top: 15px;
         }
@@ -77,7 +77,20 @@
             })
                 .then(res => res.json())
                 .then(data => {
-                    document.getElementById("output").textContent = JSON.stringify(data, null, 4);
+
+                    // Extract required values
+                    const seaLevel = data.main.sea_level ?? "N/A";
+                    const tempMinC = (data.main.temp_min - 273.15).toFixed(1);
+                    const windSpeed = data.wind.speed;
+
+                    // Render as an unordered list
+                    document.getElementById("output").innerHTML = `
+            <ul>
+                <li><strong>Sea Level Pressure:</strong> ${seaLevel} hPa</li>
+                <li><strong>Min Temperature:</strong> ${tempMinC} °C</li>
+                <li><strong>Wind Speed:</strong> ${windSpeed} m/s</li>
+            </ul>
+`;
                 })
                 .catch(err => {
                     document.getElementById("output").textContent = "Error fetching data.";
