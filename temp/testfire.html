@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Fire Hotspots</title>
+
+    <link rel="stylesheet"
+          href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+
+    <style>
+        .map-box {
+            height: 400px;
+            width: 85%;
+            margin: 20px auto;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+
+<body>
+
+<h2 style="text-align:center;">Fire Maps</h2>
+
+<div id="map1" class="map-box"></div>
+<div id="map2" class="map-box"></div>
+
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+<!-- ✅ load utils first -->
+<script src="{{ url_for('static', filename='js/map-utils.js') }}"></script>
+
+<script>
+    // ✅ now the function exists everywhere
+    createMap("map1", "../data/fire_hotspot.geojson");
+    createMap("map2", "../data/zim_admin1.geojson");
+</script>
+
+</body>
+</html>

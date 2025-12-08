@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Reusable Leaflet Maps</title>
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+    <style>
+        .map-box {
+            height: 400px;
+            width: 80%;
+            margin: 20px auto;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+
+<body>
+
+<h2 style="text-align:center;">Fire Map</h2>
+<div id="mapFire" class="map-box"></div>
+
+<h2 style="text-align:center;">Flood Map</h2>
+<div id="mapFlood" class="map-box"></div>
+
+<script src="../static/js/map-utils.js"></script>
+
+<script>
+    createMap(
+        "mapFire",
+        "../data/fire_hotspot.geojson",
+        { color: "red" }
+    );
+
+    createMap(
+        "mapFlood",
+        "../data/zim_admin1.geojson",
+        { color: "blue" }
+    );
+</script>
+
+</body>
+</html>

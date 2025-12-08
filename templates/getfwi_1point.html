@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Weather Lookup</title>
     <style>
@@ -8,6 +9,7 @@
             padding: 20px;
             background: #f3f3f3;
         }
+
         .container {
             width: 400px;
             margin: auto;
@@ -15,12 +17,14 @@
             padding: 20px;
             border-radius: 8px;
         }
+
         input {
             width: 100%;
             padding: 10px;
             margin-top: 5px;
             margin-bottom: 10px;
         }
+
         button {
             width: 100%;
             padding: 10px;
@@ -30,6 +34,7 @@
             cursor: pointer;
             font-size: 16px;
         }
+
         pre {
             background: #222;
             color: #0f0;
@@ -55,10 +60,11 @@
 
         <h3>API Response:</h3>
         <pre id="output">Waiting...</pre>
+        <div></div>
     </div>
 
     <script>
-        document.getElementById("weatherForm").addEventListener("submit", function(e){
+        document.getElementById("weatherForm").addEventListener("submit", function (e) {
             e.preventDefault();
 
             const lat = document.getElementById("lat").value;
@@ -66,17 +72,19 @@
 
             fetch("/get_weather", {
                 method: "POST",
-                headers: {"Content-Type": "application/x-www-form-urlencoded"},
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
                 body: `lat=${lat}&lon=${lon}`
             })
-            .then(res => res.json())
-            .then(data => {
-                document.getElementById("output").textContent = JSON.stringify(data, null, 4);
-            })
-            .catch(err => {
-                document.getElementById("output").textContent = "Error fetching data.";
-            });
+                .then(res => res.json())
+                .then(data => {
+                    document.getElementById("output").textContent = JSON.stringify(data, null, 4);
+                })
+                .catch(err => {
+                    document.getElementById("output").textContent = "Error fetching data.";
+                });
         });
     </script>
 
 </body>
+
+</html>

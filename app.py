@@ -1,33 +1,70 @@
-from flask import Flask, render_template, jsonify, send_file
-import os
+from flask import Flask, render_template, jsonify, request
+import json, os
+import requests
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
 
 app = Flask(__name__)
+
+# Load API key and base URL from .env
+API_KEY = os.getenv("OWM_API_KEY")
+BASE_URL = os.getenv("OWM_BASE_URL")
 
 
 @app.route("/")
 def index():
-    # List available GeoJSON files
-    geojson_files = []
-    data_folder = "data"
-
-    if os.path.exists(data_folder):
-        for file in os.listdir(data_folder):
-            if file.endswith(".geojson"):
-                geojson_files.append(file)
-
-    return render_template("map.html", geojson_files=geojson_files)
+    return render_template("index.html")
 
 
-@app.route("/data/<filename>")
-def get_geojson(filename):
-    # Serve GeoJSON files securely
-    safe_filename = os.path.basename(filename)
-    filepath = os.path.join("data", safe_filename)
+@app.route("/api/fire_hotspots")
+def fire_hotspots():
+    fp = os.path.join(app.root_path, "data", "fire_hotspot.geojson")
+    with open(fp) as f:
+        data = json.load(f)
+    return jsonify(data)
 
-    if os.path.exists(filepath) and safe_filename.endswith(".geojson"):
-        return send_file(filepath, mimetype="application/json")
-    else:
-        return jsonify({"error": "File not found"}), 404
+
+# Admin1 boundary route
+@app.route("/api/admin1")
+def admin1_boundary():
+    fp = os.path.join(app.root_path, "static", "data", "zim_admin1.geojson")
+    with open(fp) as f:
+        data = json.load(f)
+    return jsonify(data)
+
+
+@app.route("/coordinates-settings")
+def coordinates_settings():
+    return render_template("coordinates_settings.html")
+
+
+# Get weather data based on coordinates
+
+
+@app.route("/getfwi_1point")
+def home():
+    return render_template("getfwi_1point.html")
+
+
+@app.route("/coordinates_settings_map")
+def coordinates_settings_map():
+    return render_template("coordinates_settings_map.html")
+
+
+@app.route("/get_weather", methods=["POST"])
+def get_weather():
+    lat = request.form.get("lat")
+    lon = request.form.get("lon")
+
+    if not lat or not lon:
+        return jsonify({"error": "Missing coordinates"}), 400
+
+    url = f"https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={API_KEY}"
+
+    data = requests.get(url).json()
+    return jsonify(data)
 
 
 if __name__ == "__main__":

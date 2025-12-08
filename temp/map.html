@@ -12,6 +12,7 @@
         label { cursor: pointer; padding: 5px 10px; border-radius: 3px; transition: background 0.2s; }
         label:hover { background: #e9ecef; }
         input[type="checkbox"] { margin-right: 5px; }
+        .legend { font-size: 14px; }
     </style>
 </head>
 <body>
@@ -40,9 +41,17 @@
             attribution: '© OpenStreetMap contributors'
         }).addTo(map);
 
-        // Store all loaded layers
         var layers = {};
+        var colors = ['#ff3333','#33cc33','#3366ff','#ff9933','#9900cc','#00cccc','#ff66cc','#cccc00'];
+        var colorIndex = 0;
 
+        function getNextColor() {
+            var color = colors[colorIndex % colors.length];
+            colorIndex++;
+            return color;
+        }
+
+        
         function formatPopup(feature) {
             const props = feature.properties || {};
             let content = '<div>';
@@ -52,38 +61,61 @@
             return content;
         }
 
-        function getFeatureStyle(feature) {
-            if (feature.geometry.type === 'Point') {
-                return {
-                    radius: 6,
-                    fillColor: '#ff3333',
-                    color: '#660000',
-                    weight: 1,
-                    opacity: 1,
-                    fillOpacity: 0.8
-                };
-            }
-            return { color: '#3388ff', weight: 2, fillOpacity: 0.1 };
+        function addLegend(layerName, color) {
+            // Remove existing legend if any
+            var existingLegend = document.querySelector('.legend');
+            if (existingLegend) existingLegend.remove();
+
+            var legend = L.control({ position: 'bottomright' });
+
+            legend.onAdd = function(map) {
+                var div = L.DomUtil.create('div', 'legend');
+                div.style.background = '#fff';
+                div.style.padding = '8px';
+                div.style.border = '1px solid #ccc';
+                div.style.borderRadius = '4px';
+                div.innerHTML = `<div style="display:flex;align-items:center;">
+                                    <div style="width:20px;height:20px;background:${color};margin-right:8px;border:1px solid #000;"></div>
+                                    <span>${layerName}</span>
+                                 </div>`;
+                return div;
+            };
+
+            legend.addTo(map);
         }
 
         function loadLayer(file) {
             if (layers[file]) {
-                map.addLayer(layers[file]); // layer already loaded, just show
+                map.addLayer(layers[file].layer);
+                addLegend(file.replace('.geojson','').replace('_',' ').toUpperCase(), layers[file].color);
                 return;
             }
+
+            var layerColor = getNextColor();
             fetch('/data/' + file)
                 .then(res => res.json())
                 .then(data => {
                     var layer = L.geoJSON(data, {
                         pointToLayer: function(feature, latlng) {
-                            return L.circleMarker(latlng, getFeatureStyle(feature));
+                            return L.circleMarker(latlng, {
+                                radius: 6,
+                                fillColor: layerColor,
+                                color: '#000',
+                                weight: 1,
+                                opacity: 1,
+                                fillOpacity: 0.8
+                            });
                         },
-                        style: getFeatureStyle,
-                        onEachFeature: function(feature, layer) {
-                            layer.bindPopup(formatPopup(feature));
+                        style: function(feature) {
+                            return { color: layerColor, weight: 2, fillOpacity: 0.1 };
+                        },
+                        onEachFeature: function(feature, l) {
+                            l.bindPopup(formatPopup(feature));
                         }
                     }).addTo(map);
-                    layers[file] = layer;
+
+                    layers[file] = { layer: layer, color: layerColor };
+                    addLegend(file.replace('.geojson','').replace('_',' ').toUpperCase(), layerColor);
                     fitMapBounds();
                 })
                 .catch(err => console.error('Error loading', file, err));
@@ -91,18 +123,20 @@
 
         function removeLayer(file) {
             if (layers[file]) {
-                map.removeLayer(layers[file]);
+                map.removeLayer(layers[file].layer);
             }
         }
 
         function fitMapBounds() {
-            var group = L.featureGroup(Object.values(layers).filter(l => map.hasLayer(l)));
-            if (group.getLayers().length) {
-                map.fitBounds(group.getBounds(), { padding: [50, 50] });
+            var visibleLayers = Object.values(layers)
+                                      .filter(l => map.hasLayer(l.layer))
+                                      .map(l => l.layer);
+            if (visibleLayers.length) {
+                var group = L.featureGroup(visibleLayers);
+                map.fitBounds(group.getBounds(), { padding: [50,50] });
             }
         }
 
-        // Initial load for all checked boxes
         document.querySelectorAll('input[name="geojsonFile"]').forEach(cb => {
             if (cb.checked) loadLayer(cb.value);
             cb.addEventListener('change', function() {
