@@ -9,42 +9,50 @@
 <style>
     .weather-container {
         display: grid;
+        height: 100vh;
         grid-template-areas:
             "header header header header header"
             "nav maintab maintab1 maintab2 output"
             "nav main main main output"
             "nav footer footer footer footer";
+        grid-template-columns: 200px 1fr 1fr 1fr 460px;
+        grid-template-rows: 30px 25px 1fr 25px;
     }
 
     .header {
         background: #8ca0ff;
         grid-area: header;
-        height: 20px;
+
     }
 
     .nav {
         grid-area: nav;
         background: #98d99c;
+
     }
 
     .main {
         grid-area: main;
         background: #c8ec7b;
+
     }
 
     .maintab {
         grid-area: maintab;
         background: #a642ad;
+
     }
 
     .maintab1 {
         grid-area: maintab1;
         background: #f0edf0;
+
     }
 
     .maintab2 {
         grid-area: maintab2;
         background: #968f98;
+
     }
 
     .output {
