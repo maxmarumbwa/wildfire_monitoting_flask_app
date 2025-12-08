@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    .weather-container {
+        display: grid;
+        grid-template-areas:
+            "header header header header header"
+            "nav maintab maintab1 maintab2 output"
+            "nav main main main output"
+            "nav footer footer footer footer";
+    }
+
+    .header {
+        background: #8ca0ff;
+        grid-area: header;
+        height: 20px;
+    }
+
+    .nav {
+        grid-area: nav;
+        background: #98d99c;
+    }
+
+    .main {
+        grid-area: main;
+        background: #c8ec7b;
+    }
+
+    .maintab {
+        grid-area: maintab;
+        background: #a642ad;
+    }
+
+    .maintab1 {
+        grid-area: maintab1;
+        background: #f0edf0;
+    }
+
+    .maintab2 {
+        grid-area: maintab2;
+        background: #968f98;
+    }
+
+    .output {
+        grid-area: output;
+        background: #5a1176;
+    }
+
+    footer {
+        grid-area: footer;
+        background: #25802b;
+    }
+</style>
+
+<body>
+    <div class="weather-container">
+        <div class="header">header</div>
+        <div class="nav">nav</div>
+        <main class="main">main</main>
+        <main class="maintab">main1</main>
+        <main class="maintab1">main2</main>
+        <main class="maintab2">main3</main>
+        <div class="output">output </div>
+        <footer>footer</footer>
+    </div>
+</body>
+
+</html>
