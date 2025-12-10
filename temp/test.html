@@ -1,129 +1,152 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
-    <title>Weather Lookup with Leaflet (No Flask)</title>
-
-    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-
-    <style>
-        body {
-            font-family: Arial;
-            background: #f7f5ee;
-            padding: 20px;
-        }
-
-        #map {
-            height: 400px;
-            margin-bottom: 20px;
-            border-radius: 8px;
-        }
-
-        .container {
-            width: 500px;
-            margin: auto;
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-        }
-
-        input,
-        button {
-            width: 100%;
-            padding: 10px;
-            margin-top: 8px;
-            font-size: 15px;
-        }
-
-        button {
-            background: #1e90ff;
-            color: white;
-            border: none;
-        }
-
-        pre {
-            background: #222;
-            color: #0f0;
-            padding: 10px;
-            margin-top: 10px;
-            white-space: pre-wrap;
-        }
-    </style>
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
 </head>
+<style>
+    body {
+        margin: 0;
+        font-family: Arial;
+    }
+
+    .container {
+        display: grid;
+        height: 100vh;
+        grid-template-areas:
+            "header header header"
+            "nav main output"
+            "nav main output"
+            "footer footer footer";
+        grid-template-columns: 200px 1fr 300px;
+        grid-template-rows: 60px 40px 1fr 40px;
+    }
+
+    .container>div {
+        padding: 15px;
+    }
+
+    .header {
+        grid-area: header;
+        background: #2563eb;
+        color: white;
+    }
+
+    .nav {
+        grid-area: nav;
+        background: #f3f4f6;
+    }
+
+    .main {
+        grid-area: main;
+        background: white;
+    }
+
+    .output {
+        grid-area: output;
+        background: #f8fafc;
+        border-left: 1px solid #e5e7eb;
+    }
+
+    .footer {
+        grid-area: footer;
+        background: #065f46;
+        color: white;
+    }
+
+
+    /* ---------  styles for the tab------------ */
+    /* ---------  styles for the tab------------ */
+
+    /* Set height of body and the document to 100% to enable "full page tabs" */
+    body,
+    html {
+        height: 100%;
+        margin: 0;
+        font-family: Arial;
+    }
+
+    /* Style tab links */
+    .tablink {
+        background-color: #555;
+        color: white;
+        float: left;
+        border: none;
+        outline: none;
+        cursor: pointer;
+        padding: 14px 16px;
+        font-size: 17px;
+        width: 25%;
+    }
+
+    .tablink:hover {
+        background-color: #777;
+    }
+
+    /* Style the tab content (and add height:100% for full page content) */
+    .tabcontent {
+        color: white;
+        display: none;
+        padding: 100px 20px;
+        height: 100%;
+    }
+
+    #Home {
+        background-color: red;
+    }
+
+    #News {
+        background-color: green;
+    }
+
+    #Contact {
+        background-color: blue;
+    }
+
+    #About {
+        background-color: orange;
+    }
+</style>
+
 
 <body>
     <div class="container">
-        <h2>Select Location on Map</h2>
+        <div class="header">Weather Dashboard</div>
+        <div class="nav">Navigation</div>
 
-        <div id="map"></div>
+        <div class="main">
+            <button class="tablink" onclick="openPage('Home', this, 'red')">Home</button>
+            <button class="tablink" onclick="openPage('News', this, 'green')" id="defaultOpen">News</button>
+            <button class="tablink" onclick="openPage('Contact', this, 'blue')">Contact</button>
+            <button class="tablink" onclick="openPage('About', this, 'orange')">About</button>
 
-        <label>Latitude</label>
-        <input type="text" id="lat" readonly>
 
-        <label>Longitude</label>
-        <input type="text" id="lon" readonly>
+            <div id="Home" class="tabcontent">
+                <h3>Home</h3>
+                <p>Home is where the heart is..</p>
+            </div>
 
-        <button onclick="getWeather()">Get Weather</button>
+            <div id="News" class="tabcontent">
+                <h3>News</h3>
+                <p>Some news this fine day!</p>
+            </div>
 
-        <h3>API Response:</h3>
-        <pre id="output">Click on the map to select a location...</pre>
+            <div id="Contact" class="tabcontent">
+                <h3>Contact</h3>
+                <p>Get in touch, or swing by for a cup of coffee.</p>
+            </div>
+
+            <div id="About" class="tabcontent">
+                <h3>About</h3>
+                <p>Who we are and what we do.</p>
+            </div>
+
+        </div>
+        <div class="output">Weather Insights</div>
+        <div class="footer">© 2023 Weather Dashboard</div>
     </div>
-
-    <script>
-        // Your OpenWeatherMap API Key
-        const API_KEY = "YOUR_API_KEY_HERE";
-
-        // Initialize Map
-        var map = L.map('map').setView([-17.82, 31.05], 6); // Start centered over Zimbabwe
-
-        // Add OpenStreetMap Basemap
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 18
-        }).addTo(map);
-
-        var marker;
-
-        // When user clicks on the map
-        map.on('click', function (e) {
-            const lat = e.latlng.lat.toFixed(5);
-            const lon = e.latlng.lng.toFixed(5);
-
-            document.getElementById("lat").value = lat;
-            document.getElementById("lon").value = lon;
-
-            // Place marker
-            if (marker) map.removeLayer(marker);
-            marker = L.marker([lat, lon]).addTo(map);
-        });
-
-        // Call OpenWeatherMap API
-        function getWeather() {
-            const lat = document.getElementById("lat").value;
-            const lon = document.getElementById("lon").value;
-
-            if (!lat || !lon) {
-                document.getElementById("output").textContent =
-                    "Select a point on the map first.";
-                return;
-            }
-
-            const url =
-                `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=e17b48a02df3f0b1cb140c20c0c2582e`;
-
-            fetch(url)
-                .then(res => res.json())
-                .then(data => {
-                    document.getElementById("output").textContent =
-                        JSON.stringify(data, null, 4);
-                })
-                .catch(err => {
-                    document.getElementById("output").textContent = "Error fetching data.";
-                });
-        }
-    </script>
-
 </body>
 
 </html>

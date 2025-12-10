@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Dashboard</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial;
+        }
+
+        .container {
+            display: grid;
+            height: 100vh;
+            grid-template-areas:
+                "header header header"
+                "nav tabs output"
+                "nav main output"
+                "footer footer footer";
+            grid-template-columns: 200px 1fr 300px;
+            grid-template-rows: 60px 40px 1fr 40px;
+        }
+
+        .container>div {
+            padding: 15px;
+        }
+
+        .header {
+            grid-area: header;
+            background: #1e40af;
+            color: white;
+        }
+
+        .nav {
+            grid-area: nav;
+            background: #f8fafc;
+            border-right: 1px solid #e5e7eb;
+        }
+
+        .tabs {
+            grid-area: tabs;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            background: #e5e7eb;
+        }
+
+        .tab1,
+        .tab2,
+        .tab3 {
+            padding: 10px;
+            border-right: 1px solid #ccc;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+        }
+
+        .tab1 {
+            background: #dbeafe;
+        }
+
+        .tab2 {
+            background: #e0f2fe;
+        }
+
+        .tab3 {
+            background: #f0f9ff;
+            border-right: none;
+        }
+
+        .active {
+            background: white !important;
+            border-bottom: 2px solid #1e40af !important;
+        }
+
+        .main {
+            grid-area: main;
+            background: white;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .output {
+            grid-area: output;
+            background: #f8fafc;
+            border-left: 1px solid #e5e7eb;
+        }
+
+        .footer {
+            grid-area: footer;
+            background: #065f46;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">Weather Dashboard</div>
+        <div class="nav">Navigation<br>• Dashboard<br>• Map<br>• Settings</div>
+        <div class="tabs">
+            <div class="tab1 active" onclick="switchTab(1)">Get FWI via form</div>
+            <div class="tab2" onclick="switchTab(2)">Get FWI via map</div>
+            <div class="tab3" onclick="switchTab(3)">Get FWI for predefined places</div>
+        </div>
+        this is tab1
+        <div class="output">Today's Insight:<br>Perfect weather for outdoor activities</div>
+        <div class="footer">© 2023 Weather Dashboard | Last updated: Today</div>
+    </div>
+    <script>
+        function switchTab(tabNum) {
+            document.querySelectorAll('.tab1, .tab2, .tab3').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            document.querySelector('.tab' + tabNum).classList.add('active');
+            document.querySelectorAll('.tab-content')[tabNum - 1].classList.add('active');
+        }
+        document.getElementById("weatherForm").addEventListener("submit", function (e) {
+            e.preventDefault();
+
+            const lat = document.getElementById("lat").value;
+            const lon = document.getElementById("lon").value;
+
+            fetch("/get_weather", {
+                method: "POST",
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                body: `lat=${lat}&lon=${lon}`
+            })
+                .then(res => res.json())
+                .then(data => {
+                    const seaLevel = data.main.sea_level ?? "N/A";
+                    const tempMinC = (data.main.temp_min - 273.15).toFixed(1);
+                    const windSpeed = data.wind.speed;
+
+                    document.getElementById("output").innerHTML = `
+            <ul>
+                <li><strong>Sea Level Pressure:</strong> ${seaLevel} hPa</li>
+                <li><strong>Min Temperature:</strong> ${tempMinC} °C</li>
+                <li><strong>Wind Speed:</strong> ${windSpeed} m/s</li>
+            </ul>
+        `;
+                })
+                .catch(() => {
+                    document.getElementById("output").textContent = "Error fetching data.";
+                });
+        });
+    </script>
+</body>
+
+</html>

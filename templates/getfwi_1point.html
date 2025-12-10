@@ -47,7 +47,6 @@
 <body>
     <div class="container">
         <h2>Get Weather by Coordinates</h2>
-
         <form id="weatherForm">
             <label>Latitude</label>
             <input type="text" id="lat" placeholder="-15" required>
@@ -63,8 +62,8 @@
         <div></div>
     </div>
 
-    <script>
-        document.getElementById("weatherForm").addEventListener("submit", function (e) {
+  <script>
+        document.getElementById("getWeatherBtn").addEventListener("click", function (e) {
             e.preventDefault();
 
             const lat = document.getElementById("lat").value;
@@ -77,7 +76,6 @@
             })
                 .then(res => res.json())
                 .then(data => {
-
                     // Extract required values
                     const seaLevel = data.main.sea_level ?? "N/A";
                     const tempMinC = (data.main.temp_min - 273.15).toFixed(1);
@@ -89,11 +87,11 @@
                 <li><strong>Sea Level Pressure:</strong> ${seaLevel} hPa</li>
                 <li><strong>Min Temperature:</strong> ${tempMinC} °C</li>
                 <li><strong>Wind Speed:</strong> ${windSpeed} m/s</li>
-            </ul>
-`;
+            </ul>`;
                 })
                 .catch(err => {
                     document.getElementById("output").textContent = "Error fetching data.";
+                    console.error(err);
                 });
         });
     </script>
