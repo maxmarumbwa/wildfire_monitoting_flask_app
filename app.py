@@ -43,6 +43,11 @@ def coordinates_settings():
 
 # Get weather data based on coordinates
 # local page to get FWI for 1 point
+@app.route("/getfwi_tabs")
+def getfwi_tabs():
+    return render_template("getfwi.html")
+
+
 @app.route("/getfwi_1point")
 def home():
     return render_template("getfwi_1point.html")

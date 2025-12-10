@@ -97,6 +97,40 @@
             background: #065f46;
             color: white;
         }
+
+        /*  output div styles */
+        .output-title {
+            font-weight: bold;
+            color: #1e40af;
+            margin-bottom: 20px;
+            font-size: 18px;
+            border-bottom: 2px solid #dbeafe;
+            padding-bottom: 8px;
+        }
+
+        .weather-label {
+            font-weight: 600;
+            color: #4b5563;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .weather-value {
+            color: #1f2937;
+            margin-top: 6px;
+            font-size: 15px;
+        }
+
+        .weather-item {
+            margin-bottom: 16px;
+            padding: 12px;
+            background: white;
+            border-radius: 8px;
+            border-left: 4px solid #3b82f6;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
     </style>
 </head>
 
@@ -105,38 +139,18 @@
         <div class="header">Weather Dashboard</div>
         <div class="nav">Navigation<br>• Dashboard<br>• Map<br>• Settings</div>
         <div class="tabs">
-            <div class="tab1 active" onclick="switchTab(1)">Get FWI via form</div>
-            <div class="tab2" onclick="switchTab(2)">Get FWI via map</div>
-            <div class="tab3" onclick="switchTab(3)">Get FWI for predefined places</div>
+            <div class="tab1 active" onclick="switchTab(1)">Current Weather</div>
+            <div class="tab2" onclick="switchTab(2)">5-Day Forecast</div>
+            <div class="tab3" onclick="switchTab(3)">Historical Data</div>
         </div>
         <div class="main">
-            <div class="tab-content active">
-                <div class="tab-content active" id="tab1-content">
-
-                <div class="weather-box">
-                    <h2>Get Weather by Coordinates</h2>
-
-                    <form id="weatherForm">
-                        <label>Latitude</label>
-                        <input type="text" id="lat" placeholder="-15" required>
-
-                        <label>Longitude</label>
-                        <input type="text" id="lon" placeholder="27" required>
-
-                        <button type="submit">Get Weather</button>
-                    </form>
-
-                    <h3>API Response:</h3>
-                    <pre id="output">Waiting...</pre>
-                </div>
-
-            </div>
-
-            </div>
+            <div class="tab-content active">Temperature: 72°F<br>Condition: Sunny<br>Humidity: 45%</div>
             <div class="tab-content">Forecast for next 5 days</div>
             <div class="tab-content">Historical weather data</div>
         </div>
-        <div class="output">Today's Insight:<br>Perfect weather for outdoor activities</div>
+        <div class="output">
+            weather output
+        </div>
         <div class="footer">© 2023 Weather Dashboard | Last updated: Today</div>
     </div>
     <script>
@@ -146,35 +160,6 @@
             document.querySelector('.tab' + tabNum).classList.add('active');
             document.querySelectorAll('.tab-content')[tabNum - 1].classList.add('active');
         }
-        document.getElementById("weatherForm").addEventListener("submit", function (e) {
-    e.preventDefault();
-
-    const lat = document.getElementById("lat").value;
-    const lon = document.getElementById("lon").value;
-
-    fetch("/get_weather", {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: `lat=${lat}&lon=${lon}`
-    })
-    .then(res => res.json())
-    .then(data => {
-        const seaLevel = data.main.sea_level ?? "N/A";
-        const tempMinC = (data.main.temp_min - 273.15).toFixed(1);
-        const windSpeed = data.wind.speed;
-
-        document.getElementById("output").innerHTML = `
-            <ul>
-                <li><strong>Sea Level Pressure:</strong> ${seaLevel} hPa</li>
-                <li><strong>Min Temperature:</strong> ${tempMinC} °C</li>
-                <li><strong>Wind Speed:</strong> ${windSpeed} m/s</li>
-            </ul>
-        `;
-    })
-    .catch(() => {
-        document.getElementById("output").textContent = "Error fetching data.";
-    });
-});
     </script>
 </body>
 
