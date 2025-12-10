@@ -4,79 +4,127 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Weather Dashboard</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial;
+        }
+
+        .container {
+            display: grid;
+            height: 100vh;
+            grid-template-areas:
+                "header header header"
+                "nav tabs output"
+                "nav main output"
+                "footer footer footer";
+            grid-template-columns: 200px 1fr 300px;
+            grid-template-rows: 60px 40px 1fr 40px;
+        }
+
+        .container>div {
+            padding: 15px;
+        }
+
+        .header {
+            grid-area: header;
+            background: #1e40af;
+            color: white;
+        }
+
+        .nav {
+            grid-area: nav;
+            background: #f8fafc;
+            border-right: 1px solid #e5e7eb;
+        }
+
+        .tabs {
+            grid-area: tabs;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            background: #e5e7eb;
+        }
+
+        .tab1,
+        .tab2,
+        .tab3 {
+            padding: 10px;
+            border-right: 1px solid #ccc;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+        }
+
+        .tab1 {
+            background: #dbeafe;
+        }
+
+        .tab2 {
+            background: #e0f2fe;
+        }
+
+        .tab3 {
+            background: #f0f9ff;
+            border-right: none;
+        }
+
+        .active {
+            background: white !important;
+            border-bottom: 2px solid #1e40af !important;
+        }
+
+        .main {
+            grid-area: main;
+            background: white;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .output {
+            grid-area: output;
+            background: #f8fafc;
+            border-left: 1px solid #e5e7eb;
+        }
+
+        .footer {
+            grid-area: footer;
+            background: #065f46;
+            color: white;
+        }
+    </style>
 </head>
-<style>
-    .weather-container {
-        display: grid;
-        height: 100vh;
-        grid-template-areas:
-            "header header header header header"
-            "nav maintab maintab1 maintab2 output"
-            "nav main main main output"
-            "nav footer footer footer footer";
-        grid-template-columns: 200px 1fr 1fr 1fr 460px;
-        grid-template-rows: 30px 25px 1fr 25px;
-    }
-
-    .header {
-        background: #8ca0ff;
-        grid-area: header;
-
-    }
-
-    .nav {
-        grid-area: nav;
-        background: #98d99c;
-
-    }
-
-    .main {
-        grid-area: main;
-        background: #c8ec7b;
-
-    }
-
-    .maintab {
-        grid-area: maintab;
-        background: #a642ad;
-
-    }
-
-    .maintab1 {
-        grid-area: maintab1;
-        background: #f0edf0;
-
-    }
-
-    .maintab2 {
-        grid-area: maintab2;
-        background: #968f98;
-
-    }
-
-    .output {
-        grid-area: output;
-        background: #5a1176;
-    }
-
-    footer {
-        grid-area: footer;
-        background: #25802b;
-    }
-</style>
 
 <body>
-    <div class="weather-container">
-        <div class="header">header</div>
-        <div class="nav">nav</div>
-        <main class="main">main</main>
-        <main class="maintab">main1</main>
-        <main class="maintab1">main2</main>
-        <main class="maintab2">main3</main>
-        <div class="output">output </div>
-        <footer>footer</footer>
+    <div class="container">
+        <div class="header">Weather Dashboard</div>
+        <div class="nav">Navigation<br>• Dashboard<br>• Map<br>• Settings</div>
+        <div class="tabs">
+            <div class="tab1 active" onclick="switchTab(1)">Current Weather</div>
+            <div class="tab2" onclick="switchTab(2)">5-Day Forecast</div>
+            <div class="tab3" onclick="switchTab(3)">Historical Data</div>
+        </div>
+        <div class="main">
+            <div class="tab-content active">Temperature: 72°F<br>Condition: Sunny<br>Humidity: 45%</div>
+            <div class="tab-content">Forecast for next 5 days</div>
+            <div class="tab-content">Historical weather data</div>
+        </div>
+        <div class="output">Today's Insight:<br>Perfect weather for outdoor activities</div>
+        <div class="footer">© 2023 Weather Dashboard | Last updated: Today</div>
     </div>
+    <script>
+        function switchTab(tabNum) {
+            document.querySelectorAll('.tab1, .tab2, .tab3').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            document.querySelector('.tab' + tabNum).classList.add('active');
+            document.querySelectorAll('.tab-content')[tabNum - 1].classList.add('active');
+        }
+    </script>
 </body>
 
 </html>
