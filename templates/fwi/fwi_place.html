@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="settings-container">
+    {% include "header.html" %}
+
+    <div id="settings">
+        <nav id="left-settings" class="sidebar-title">
+            <div class="nav-item sidebar-title">
+                <a href="{{ url_for('index') }}"><i class="fas fa-home"></i> Home</a>
+            </div>
+            <div class="nav-item sidebar-title">
+                <a href="{{ url_for('fwi_form') }}"><i class="fas fa-cog"></i> Get FWI by Coordinates</a>
+            </div>
+            <div class="nav-item sidebar-title">
+                <a href="{{ url_for('fwi_map') }}"><i class="fas fa-cog"></i> Get FWI by Map</a>
+            </div>
+            <div class="nav-item sidebar-title">
+                <a href="{{ url_for('fwi_place') }}"><i class="fas fa-cog"></i> Get WFI by Place Name</a>
+            </div>
+        </nav>
+
+        <div class="container">
+            <h2>Get Weather by Place Name</h2>
+
+            <form id="weatherForm">
+                <label>Select Town in Zimbabwe</label>
+                <select id="town" required>
+                    <option value="" disabled selected>Select a town</option>
+                    <option value="Harare">Harare</option>
+                    <option value="Bulawayo">Bulawayo</option>
+                    <option value="Mutare">Mutare</option>
+                    <option value="Gweru">Gweru</option>
+                    <option value="Masvingo">Masvingo</option>
+                    <option value="Kwekwe">Kwekwe</option>
+                    <option value="Chinhoyi">Chinhoyi</option>
+                    <option value="Bindura">Bindura</option>
+                    <option value="Victoria Falls">Victoria Falls</option>
+                    <option value="Kariba">Kariba</option>
+                    <option value="Kadoma">Kadoma</option>
+                    <option value="Marondera">Marondera</option>
+                </select>
+
+                <button type="submit">Get Weather</button>
+            </form>
+
+            <h3>API Response:</h3>
+            <pre id="output">Waiting...</pre>
+        </div>
+
+        <script>
+            document.getElementById("weatherForm").addEventListener("submit", function (e) {
+                e.preventDefault();
+
+                const town = document.getElementById("town").value;
+
+                fetch("/fwi/place", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                    body: `place=${town}`
+                })
+                .then(res => res.json())
+                .then(data => {
+                    const seaLevel = data.main.sea_level ?? "N/A";
+                    const tempMinC = (data.main.temp_min - 273.15).toFixed(1);
+                    const windSpeed = data.wind.speed;
+
+                    document.getElementById("output").innerHTML = `
+                        <ul>
+                            <li><strong>Sea Level Pressure:</strong> ${seaLevel} hPa</li>
+                            <li><strong>Min Temperature:</strong> ${tempMinC} °C</li>
+                            <li><strong>Wind Speed:</strong> ${windSpeed} m/s</li>
+                        </ul>
+                    `;
+                })
+                .catch(() => {
+                    document.getElementById("output").textContent = "Error fetching data.";
+                });
+            });
+        </script>
+
+        {% include 'footer.html' %}
+    </div>
+</div>
+
+{% endblock %}

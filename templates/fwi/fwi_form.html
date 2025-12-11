@@ -2,21 +2,23 @@
 
 {% block content %}
 
-<body>
     <div class="settings-container">
         {% include "header.html" %}
         <div id="settings">
             <nav id="left-settings" class="sidebar-title">
                 <div class="nav-item sidebar-title">
-                    <a href="{{ url_for('coordinates_settings') }}"><i class="fas fa-cog"></i> Get FWI by Coordinates</a>
+                    <a href="{{ url_for('index') }}"><i class="fas fa-home"></i> Home</a>
+                </div>
+                <div class="nav-item sidebar-title">
+                    <a href="{{ url_for('fwi_form') }}"><i class="fas fa-cog"></i> Get FWI by Coordinates</a>
                 </div>
 
                 <div class="nav-item sidebar-title">
-                    <a href="{{ url_for('coordinates_settings') }}"><i class="fas fa-cog"></i> Get FWI by form</a>
+                    <a href="{{ url_for('fwi_map') }}"><i class="fas fa-cog"></i> Get FWI by map</a>
                 </div>
 
                 <div class="nav-item sidebar-title">
-                    <a href="{{ url_for('coordinates_settings') }}"><i class="fas fa-cog"></i> Get WFI by place name</a>
+                    <a href="{{ url_for('fwi_place') }}"><i class="fas fa-cog"></i> Get WFI by place name</a>
                 </div>
 
 
@@ -70,8 +72,8 @@
     });
 });
     </script>
+</div>
 
-</body>
 
 {% include 'footer.html' %}
 

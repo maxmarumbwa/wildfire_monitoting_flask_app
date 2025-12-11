@@ -43,14 +43,52 @@ def coordinates_settings():
 
 # Get weather data based on coordinates
 # local page to get FWI for 1 point
-@app.route("/getfwi_form")
-def getfwi_form1():
+@app.route("/fwi/form")
+def fwi_form():
     return render_template("fwi/fwi_form.html")
 
 
-@app.route("/getfwi_1point")
-def home():
-    return render_template("getfwi_1point.html")
+@app.route("/fwi/map")
+def fwi_map():
+    return render_template("fwi/fwi_map.html")
+
+
+@app.route("/fwi/place", methods=["GET"])
+def fwi_place_page():
+    """Render the place search page"""
+    return render_template("fwi/fwi_place.html")
+
+
+@app.route("/fwi/place", methods=["POST"])
+def fwi_place():
+    place = request.form.get("place")
+
+    # Example dictionary — replace with database or full list
+    zimbabwe_coords = {
+        "Harare": (-17.8292, 31.0522),
+        "Bulawayo": (-20.1325, 28.6265),
+        "Mutare": (-18.9707, 32.6709),
+        "Gweru": (-19.4500, 29.8167),
+        "Masvingo": (-20.0637, 30.8277),
+        "Kwekwe": (-18.9281, 29.8140),
+        "Chinhoyi": (-17.3667, 30.2000),
+        "Bindura": (-17.3000, 31.3333),
+        "Victoria Falls": (-17.9244, 25.8567),
+        "Kariba": (-16.5167, 28.8000),
+        "Kadoma": (-18.3333, 29.9167),
+        "Marondera": (-18.1853, 31.5519),
+    }
+
+    if place not in zimbabwe_coords:
+        return jsonify({"error": "Unknown place"}), 400
+
+    lat, lon = zimbabwe_coords[place]
+
+    # Call your weather API
+    url = f"https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={os.getenv('API_KEY')}"
+    response = requests.get(url)
+
+    return jsonify(response.json())
 
 
 # display results external pages

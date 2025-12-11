@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="settings-container">
+    {% include "header.html" %}
+    
+    <div id="settings">
+        <nav id="left-settings" class="sidebar-title">
+            <div class="nav-item sidebar-title">
+                <a href="{{ url_for('index') }}"><i class="fas fa-home"></i> Home</a>
+            </div>
+            <div class="nav-item sidebar-title">
+                <a href="{{ url_for('fwi_form') }}"><i class="fas fa-cog"></i> Get FWI by Coordinates</a>
+            </div>
+            <div class="nav-item sidebar-title">
+                <a href="{{ url_for('fwi_map') }}"><i class="fas fa-cog"></i> Get FWI by Map</a>
+            </div>
+            <div class="nav-item sidebar-title">
+                <a href="{{ url_for('fwi_place_page') }}"><i class="fas fa-cog"></i> Get FWI by Place Name</a>
+            </div>
+        </nav>
+        
+        <div class="container">
+<div class="container">
+    <h2>Select Location on Map</h2>
+
+    <div id="map"></div>
+
+    <form id="weatherForm">
+        <label>Latitude</label>
+        <input type="text" id="lat" readonly>
+
+        <label>Longitude</label>
+        <input type="text" id="lon" readonly>
+
+        <button type="submit">Get Weather</button>
+    </form>
+
+    <h3>Weather Results:</h3>
+    <div id="tableContainer">Click on the map and submit…</div>
+</div>
+
+<script>
+    // Initialize Map
+    var map = L.map('map').setView([-15, 27], 5);
+
+    // Add Basemap
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 18
+    }).addTo(map);
+
+    var marker;
+
+    // On Map Click
+    map.on('click', function(e) {
+        var lat = e.latlng.lat.toFixed(5);
+        var lon = e.latlng.lng.toFixed(5);
+
+        document.getElementById("lat").value = lat;
+        document.getElementById("lon").value = lon;
+
+        if (marker) {
+            map.removeLayer(marker);
+        }
+        marker = L.marker([lat, lon]).addTo(map);
+    });
+
+    // Submit Weather Request
+    document.getElementById("weatherForm").addEventListener("submit", function(e) {
+        e.preventDefault();
+
+        const lat = document.getElementById("lat").value;
+        const lon = document.getElementById("lon").value;
+
+        fetch("/get_weather", {
+            method: "POST",
+            headers: {"Content-Type": "application/x-www-form-urlencoded"},
+            body: `lat=${lat}&lon=${lon}`
+        })
+        .then(res => res.json())
+        .then(data => renderTable(data))
+        .catch(() => {
+            document.getElementById("tableContainer").innerHTML = "Error fetching data.";
+        });
+    });
+
+    // Function to render weather table
+    function renderTable(data) {
+        if (data.error) {
+            document.getElementById("tableContainer").innerHTML = `<p>${data.error}</p>`;
+            return;
+        }
+
+        const tempC = (data.main.temp - 273.15).toFixed(2);
+        const feelsC = (data.main.feels_like - 273.15).toFixed(2);
+
+        const html = `
+            <table>
+                <tr><th>Field</th><th>Value</th></tr>
+                <tr><td>Location</td><td>${data.name}, ${data.sys.country}</td></tr>
+                <tr><td>Latitude</td><td>${data.coord.lat}</td></tr>
+                <tr><td>Longitude</td><td>${data.coord.lon}</td></tr>
+                <tr><td>Weather</td><td>${data.weather[0].description}</td></tr>
+                <tr><td>Temperature (°C)</td><td>${tempC}</td></tr>
+                <tr><td>Feels Like (°C)</td><td>${feelsC}</td></tr>
+                <tr><td>Humidity (%)</td><td>${data.main.humidity}</td></tr>
+                <tr><td>Pressure (hPa)</td><td>${data.main.pressure}</td></tr>
+                <tr><td>Wind Speed (m/s)</td><td>${data.wind.speed}</td></tr>
+                <tr><td>Cloud Cover (%)</td><td>${data.clouds.all}</td></tr>
+            </table>
+        `;
+
+        document.getElementById("tableContainer").innerHTML = html;
+    }
+</script>
+
+</body>
+
+        </div>
+    </div>
+    
+    {% include 'footer.html' %}
+</div>
+
+
+{% endblock %}
