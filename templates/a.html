@@ -1,145 +1,56 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Fire Dashboard</title>
+    <title>Zimbabwe Fire Trends 2000-2020</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        body { margin: 0; font-family: Arial; background: #f5f5f5; height: 100vh; overflow: hidden; }
-        .dashboard {
-            display: grid;
-            grid-template-columns: 1fr 280px;
-            grid-template-rows: 60px 90px 180px 1fr;
-            gap: 12px;
-            padding: 12px;
-            height: 100vh;
-            box-sizing: border-box;
-        }
-        .nav {
-            grid-column: 1 / -1;
-            background: white;
-            padding: 12px;
-            border-radius: 6px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-        .cards {
-            grid-column: 1 / -1;
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 12px;
-        }
-        .card {
-            background: white;
-            padding: 12px;
-            border-radius: 6px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-        .bar-chart {
-            background: white;
-            padding: 12px;
-            border-radius: 6px;
-            grid-column: 1;
-            grid-row: 3;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-        .pie-chart {
-            background: white;
-            padding: 12px;
-            border-radius: 6px;
-            grid-column: 2;
-            grid-row: 3;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-        .map {
-            background: white;
-            padding: 12px;
-            border-radius: 6px;
-            grid-column: 2;
-            grid-row: 4;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-        .table {
-            background: white;
-            padding: 12px;
-            border-radius: 6px;
-            grid-column: 1;
-            grid-row: 4;
-            overflow: hidden;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 12px;
-        }
-        th, td {
-            padding: 8px;
-            border-bottom: 1px solid #eee;
-            text-align: left;
-        }
-        thead th {
-            background: #f8f9fa;
-            position: sticky;
-            top: 0;
-        }
-        .table-content {
-            height: calc(100% - 40px);
-            overflow-y: auto;
-        }
-        h3 { margin: 0 0 8px 0; font-size: 14px; }
-        p { margin: 0; font-size: 20px; font-weight: bold; }
-        input { padding: 6px; border: 1px solid #ddd; border-radius: 4px; }
+        body { font-family: Arial; padding: 20px; background: #f5f5f5; }
+        canvas { background: white; border: 1px solid #ccc; border-radius: 6px; }
     </style>
 </head>
 <body>
-    <div class="dashboard">
-        <div class="nav">
-            <h2>Fire Analytics</h2>
-            <div>
-                <input type="range" style="width: 150px;">
-                <input type="month" style="margin-left: 10px;">
-            </div>
-        </div>
+    <h2>Zimbabwe Fire Trends (2000-2020)</h2>
+    <canvas id="trendChart" width="1000" height="500"></canvas>
 
-        <div class="cards">
-            <div class="card"><h3>Total Fires</h3><p>156</p></div>
-            <div class="card"><h3>High FRP</h3><p>42</p></div>
-            <div class="card"><h3>This Month</h3><p>28</p></div>
-            <div class="card"><h3>Districts</h3><p>15</p></div>
-        </div>
+    <script>
+        fetch('/data/fire.json')
+            .then(response => response.json())
+            .then(data => {
+                const provinces = Object.keys(data[0]).filter(k => k !== 'year');
+                const years = data.map(d => d.year);
 
-        <div class="bar-chart">
-            <h3>Monthly Trend</h3>
-            <div style="height: 130px; background: #f8f9fa; border-radius: 4px;"></div>
-        </div>
+                // Prepare datasets
+                const datasets = provinces.map((p, idx) => ({
+                    label: p,
+                    data: data.map(d => d[p]),
+                    borderColor: `hsl(${idx * 36}, 70%, 50%)`,
+                    backgroundColor: `hsla(${idx * 36}, 70%, 50%, 0.2)`,
+                    fill: false,
+                    tension: 0.3
+                }));
 
-        <div class="pie-chart">
-            <h3>District Split</h3>
-            <div style="height: 130px; background: #f8f9fa; border-radius: 4px;"></div>
-        </div>
-
-        <div class="table">
-            <h3>Fire Details</h3>
-            <div class="table-content">
-                <table>
-                    <thead><tr><th>ID</th><th>Date</th><th>District</th><th>FRP</th></tr></thead>
-                    <tbody>
-                        <tr><td>1</td><td>2024-01-15</td><td>North</td><td>45.2</td></tr>
-                        <tr><td>2</td><td>2024-01-16</td><td>South</td><td>78.5</td></tr>
-                        <tr><td>3</td><td>2024-01-17</td><td>East</td><td>32.1</td></tr>
-                        <tr><td>4</td><td>2024-01-18</td><td>West</td><td>67.8</td></tr>
-                        <tr><td>5</td><td>2024-01-19</td><td>Central</td><td>23.4</td></tr>
-                        <tr><td>6</td><td>2024-01-20</td><td>North</td><td>89.1</td></tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <div class="map">
-            <h3>Fire Locations</h3>
-            <div style="height: 130px; background: #f8f9fa; border-radius: 4px;"></div>
-        </div>
-    </div>
+                // Plot chart
+                const ctx = document.getElementById('trendChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: years,
+                        datasets: datasets
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: { position: 'bottom' },
+                            title: { display: true, text: 'Yearly Fire Trends by Province' }
+                        },
+                        scales: {
+                            y: { beginAtZero: true },
+                            x: { title: { display: true, text: 'Year' } }
+                        }
+                    }
+                });
+            })
+            .catch(err => console.error("Error loading JSON:", err));
+    </script>
 </body>
 </html>

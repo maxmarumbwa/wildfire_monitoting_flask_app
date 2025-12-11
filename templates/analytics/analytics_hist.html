@@ -59,16 +59,15 @@
             <canvas id="pie-chart-canvas"></canvas>
         </div>
 
-        <div class="bar-chart"><h3>Monthly Trend</h3></div>
+        <div class="bar-chart">
+            <small>Monthly Trend</small>
+        <canvas id="bar-chart-canvas"></canvas>
+        </div>
 
         <div class="table">
             <h3>Fire Details</h3>
-            <table>
-                <thead><tr><th>ID</th><th>Date</th><th>District</th><th>FRP</th></tr></thead>
-                <tbody>
-                    <tr><td>1</td><td>2024-01-15</td><td>North</td><td>45.2</td></tr>
-                    <tr><td>2</td><td>2024-01-16</td><td>South</td><td>78.5</td></tr>
-                </tbody>
+            <canvas id="rainfallChart"></canvas>
+ 
             </table>
         </div>
 
@@ -92,6 +91,30 @@
             }
         }
     });
+
+    // plot chart
+      const barchart = document.getElementById('bar-chart-canvas');
+
+  new Chart(barchart, {
+    type: 'bar',
+    data: {
+      labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+      datasets: [{
+        label: '# of Votes',
+        data: [12, 19, 3, 5, 2, 3],
+        borderWidth: 1
+      }]
+    },
+    options: {
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      }
+    }
+  });
+
+  // plot
 </script>
 </body>
 </html>
