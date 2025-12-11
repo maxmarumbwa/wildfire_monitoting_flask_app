@@ -92,6 +92,12 @@ def fwi_place():
     return jsonify(response.json())
 
 
+# Analytics
+@app.route("/analytics/hist")
+def analytics_hist():
+    return render_template("analytics/analytics_hist.html")
+
+
 # display results external pages
 @app.route("/getfwi_1point_ext")
 def weather_ext():
@@ -127,6 +133,45 @@ def weather_summary():
 def save_weather():
     session["weather"] = request.json
     return jsonify({"status": "saved"})
+
+
+# Historical fire data
+@app.route("/data")
+def fire_data():
+    return {
+        "years": [
+            2000,
+            2001,
+            2002,
+            2003,
+            2004,
+            2005,
+            2006,
+            2007,
+            2008,
+            2009,
+            2010,
+            2011,
+            2012,
+            2013,
+        ],
+        "incidents": [
+            120,
+            135,
+            160,
+            180,
+            210,
+            240,
+            260,
+            300,
+            280,
+            320,
+            350,
+            370,
+            390,
+            420,
+        ],
+    }
 
 
 if __name__ == "__main__":

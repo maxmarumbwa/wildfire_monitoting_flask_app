@@ -108,20 +108,25 @@ main {
     right: 0;
     height: 200px;
     background: #f8f9fa;
-    transition: height 0.3s ease, transform 0.3s ease;
+    transition: transform 0.3s ease;
     padding: 15px;
     display: flex;
     gap: 15px;
     border-top: 2px solid #dee2e6;
     overflow: hidden;
     z-index: 1000;
-    /* Increase this to bring to front */
 }
+
+/* Only use transform — remove height + padding collapsing */
+.bottom-section.collapsed {
+    transform: translateY(100%);
+}
+
 
 .toggle-button {
     position: absolute;
-    bottom: 220px;
-    right: 15px;
+    bottom: 210px;
+    right: 20px;
     padding: 8px 15px;
     background: #2c3e50;
     color: white;
@@ -132,7 +137,7 @@ main {
     align-items: center;
     gap: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    z-index: 1001;
+    z-index: 2001;
     /* Make button higher than bottom section */
 }
 
