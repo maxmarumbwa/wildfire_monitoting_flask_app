@@ -2,6 +2,7 @@
 <html>
 <head>
     <title>Fire Dashboard</title>
+       <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         body {
             margin: 0;
@@ -14,10 +15,10 @@
             display: grid;
             height: 100vh;
             grid-template-columns: 300px 1fr 1fr 1fr;
-            grid-template-rows: 90px 400px 1fr;
+            grid-template-rows: 70px 300px 1fr;
             grid-template-areas:
                 "nav card1 card2 card3"
-                "nav bar-chart pie-chart pie-chart"
+                "nav bar-chart bar-chart pie-chart"
                 "nav table table table";
             gap: 10px;
             padding: 10px;
@@ -53,9 +54,12 @@
         <div class="card2"><h3>High FRP</h3><p>42</p></div>
         <div class="card3"><h3>This Month</h3><p>28</p></div>
 
-        <div class="bar-chart"><h3>Monthly Trend</h3></div>
+        <div class="pie-chart" id="pie-chart">
+            <small>Monthly Distribution</small>
+            <canvas id="pie-chart-canvas"></canvas>
+        </div>
 
-        <div class="pie-chart"><h3>Monthly Distribution</h3></div>
+        <div class="bar-chart"><h3>Monthly Trend</h3></div>
 
         <div class="table">
             <h3>Fire Details</h3>
@@ -69,6 +73,25 @@
         </div>
 
     </div>
-
+<script>
+    const ctx = document.getElementById('pie-chart-canvas').getContext('2d');
+    const firePieChart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: ['North', 'South', 'East', 'West'],
+            datasets: [{
+                label: 'Fires per District',
+                data: [45, 78, 32, 20],  // synthetic data
+                backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0']
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { position: 'bottom' }
+            }
+        }
+    });
+</script>
 </body>
 </html>
