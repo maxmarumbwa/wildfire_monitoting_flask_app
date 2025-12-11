@@ -66,7 +66,7 @@
 
         <div class="table">
             <h3>Fire Details</h3>
-            <canvas id="rainfallChart"></canvas>
+            <canvas id="fireChart"></canvas>
  
             </table>
         </div>
@@ -114,7 +114,58 @@
     }
   });
 
-  // plot
+  // plot table 
+    // Step 1: Fetch JSON data
+    fetch('{{ url_for("static", filename="data/fire.json") }}')
+      .then(response => response.json())
+      .then(data => {
+        const years = data.map(d => d.year);
+
+        // Get all region names dynamically (excluding 'year')
+        const regions = Object.keys(data[0]).filter(k => k !== 'year');
+
+        // Prepare datasets
+        const datasets = regions.map((region, index) => {
+          const color = `hsl(${index * 30}, 70%, 50%)`; // different color for each region
+          return {
+            label: region,
+            data: data.map(d => d[region]),
+            borderColor: color,
+            backgroundColor: color + '55', // transparent fill
+            fill: false,
+            tension: 0.1
+          };
+        });
+
+        // Step 2: Create Chart
+        const ctx_firechart = document.getElementById('fireChart').getContext('2d');
+        const fireChart = new Chart(ctx_firechart, {
+          type: 'line', // can change to 'bar' if you prefer
+          data: {
+            labels: years,
+            datasets: datasets
+          },
+          options: {
+            responsive: true,
+            plugins: {
+              title: {
+                display: true,
+                text: 'Fire Incidents by Region'
+              },
+              legend: {
+                position: 'bottom'
+              }
+            },
+            scales: {
+              y: {
+                beginAtZero: true
+              }
+            }
+          }
+        });
+      })
+      .catch(err => console.error('Error loading JSON:', err));
+
 </script>
 </body>
 </html>
