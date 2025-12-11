@@ -109,7 +109,33 @@
             <div class="tab2" onclick="switchTab(2)">Get FWI via map</div>
             <div class="tab3" onclick="switchTab(3)">Get FWI for predefined places</div>
         </div>
-        this is tab1
+        <div class="main">
+            <div class="tab-content active">
+                <div class="tab-content active" id="tab1-content">
+
+                <div class="weather-box">
+                    <h2>Get Weather by Coordinates</h2>
+
+                    <form id="weatherForm">
+                        <label>Latitude</label>
+                        <input type="text" id="lat" placeholder="-15" required>
+
+                        <label>Longitude</label>
+                        <input type="text" id="lon" placeholder="27" required>
+
+                        <button type="submit">Get Weather</button>
+                    </form>
+
+                    <h3>API Response:</h3>
+                    <pre id="output">Waiting...</pre>
+                </div>
+
+            </div>
+
+            </div>
+            <div class="tab-content">Forecast for next 5 days</div>
+            <div class="tab-content">Historical weather data</div>
+        </div>
         <div class="output">Today's Insight:<br>Perfect weather for outdoor activities</div>
         <div class="footer">© 2023 Weather Dashboard | Last updated: Today</div>
     </div>
@@ -121,34 +147,34 @@
             document.querySelectorAll('.tab-content')[tabNum - 1].classList.add('active');
         }
         document.getElementById("weatherForm").addEventListener("submit", function (e) {
-            e.preventDefault();
+    e.preventDefault();
 
-            const lat = document.getElementById("lat").value;
-            const lon = document.getElementById("lon").value;
+    const lat = document.getElementById("lat").value;
+    const lon = document.getElementById("lon").value;
 
-            fetch("/get_weather", {
-                method: "POST",
-                headers: { "Content-Type": "application/x-www-form-urlencoded" },
-                body: `lat=${lat}&lon=${lon}`
-            })
-                .then(res => res.json())
-                .then(data => {
-                    const seaLevel = data.main.sea_level ?? "N/A";
-                    const tempMinC = (data.main.temp_min - 273.15).toFixed(1);
-                    const windSpeed = data.wind.speed;
+    fetch("/get_weather", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: `lat=${lat}&lon=${lon}`
+    })
+    .then(res => res.json())
+    .then(data => {
+        const seaLevel = data.main.sea_level ?? "N/A";
+        const tempMinC = (data.main.temp_min - 273.15).toFixed(1);
+        const windSpeed = data.wind.speed;
 
-                    document.getElementById("output").innerHTML = `
+        document.getElementById("output").innerHTML = `
             <ul>
                 <li><strong>Sea Level Pressure:</strong> ${seaLevel} hPa</li>
                 <li><strong>Min Temperature:</strong> ${tempMinC} °C</li>
                 <li><strong>Wind Speed:</strong> ${windSpeed} m/s</li>
             </ul>
         `;
-                })
-                .catch(() => {
-                    document.getElementById("output").textContent = "Error fetching data.";
-                });
-        });
+    })
+    .catch(() => {
+        document.getElementById("output").textContent = "Error fetching data.";
+    });
+});
     </script>
 </body>
 

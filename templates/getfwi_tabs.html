@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Dashboard</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+</head>
+<style>
+    body {
+        margin: 0;
+        font-family: Arial;
+    }
+
+    .container {
+        display: grid;
+        height: 100vh;
+        grid-template-areas:
+            "header header header"
+            "nav tabs output"
+            "nav main output"
+            "footer footer footer";
+        grid-template-columns: 200px 1fr 300px;
+        grid-template-rows: 60px 40px 1fr 40px;
+    }
+
+    .container>div {
+        padding: 15px;
+    }
+
+    .header {
+        grid-area: header;
+        background: #1e40af;
+        color: white;
+    }
+
+    .nav {
+        grid-area: nav;
+        background: #f8fafc;
+        border-right: 1px solid #e5e7eb;
+    }
+
+    .tabs {
+        grid-area: tabs;
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        background: #e5e7eb;
+    }
+
+    .tab1,
+    .tab2,
+    .tab3 {
+        padding: 10px;
+        border-right: 1px solid #ccc;
+        cursor: pointer;
+        border-bottom: 2px solid transparent;
+    }
+
+    .tab1 {
+        background: #dbeafe;
+    }
+
+    .tab2 {
+        background: #e0f2fe;
+    }
+
+    .tab3 {
+        background: #f0f9ff;
+        border-right: none;
+    }
+
+    .active {
+        background: white !important;
+        border-bottom: 2px solid #1e40af !important;
+    }
+
+    .main {
+        grid-area: main;
+        background: white;
+        height: calc(100vh - 140px); /* adjust */;
+    }
+
+ .tab-content {
+    height: 100%;
+}
+
+    .tab-content.active {
+        display: block;
+    }
+
+    .output {
+        grid-area: output;
+        background: #f8fafc;
+        border-left: 1px solid #e5e7eb;
+    }
+
+    .footer {
+        grid-area: footer;
+        background: #065f46;
+        color: white;
+    }
+
+#map {
+    height: 100%;
+    width: 100%;
+}
+</style>
+
+<body>
+    <div class="container">
+        <div class="header">Weather vvvDashboard</div>
+        <div class="nav">Navigation<br>• Dashboard<br>• Map<br>• Settings</div>
+        <div class="tabs">
+            <div class="tab1 active" onclick="switchTab(1)">Get FWI by latlon</div>
+            <div class="tab2" onclick="switchTab(2)">Get FWI by Map</div>
+            <div class="tab3" onclick="switchTab(3)">Get FWI by place names</div>
+        </div>
+        <div class="main">
+            <div class="tab-content active">
+    
+
+        <h3>API Response:</h3>
+        <pre id="output">Waiting...</pre>
+        <div></div>
+            </div>
+            <div class="tab-content">
+                <small>Get fwi by Map</small>
+                <div id="map"></div>
+
+            </div>
+            <div class="tab-content">
+                <p>Get fwi by pre-defined names</p>
+            </div>
+        </div>
+        <div class="output">Today's Insight:<br>Perfect weather for outdoor activities</div>
+        <div class="footer">© 2023 Weather Dashboard | Last updated: Today</div>
+    </div>
+    <script>
+        function switchTab(tabNum) {
+            document.querySelectorAll('.tab1, .tab2, .tab3')
+                .forEach(tab => tab.classList.remove('active'));
+
+            document.querySelectorAll('.tab-content')
+                .forEach(content => content.classList.remove('active'));
+
+            document.querySelector('.tab' + tabNum).classList.add('active');
+            document.querySelectorAll('.tab-content')[tabNum - 1].classList.add('active');
+
+            // ✅ Fix Leaflet resize issue
+            if (tabNum === 2) {
+                setTimeout(() => {
+                    map.invalidateSize();
+                }, 100);
+            }
+        }
+
+
+        // Map
+        // Initialize Map
+        var map = L.map('map').setView([-15, 27], 5);
+
+        // Add OpenStreetMap Basemap
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 18
+        }).addTo(map);
+
+        
+    </script>
+</body>
+
+</html>

@@ -4,7 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Weather Dashboard</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 </head>
 <style>
     body {
@@ -17,7 +19,7 @@
         height: 100vh;
         grid-template-areas:
             "header header header"
-            "nav main output"
+            "nav tabs output"
             "nav main output"
             "footer footer footer";
         grid-template-columns: 200px 1fr 300px;
@@ -30,18 +32,63 @@
 
     .header {
         grid-area: header;
-        background: #2563eb;
+        background: #1e40af;
         color: white;
     }
 
     .nav {
         grid-area: nav;
-        background: #f3f4f6;
+        background: #f8fafc;
+        border-right: 1px solid #e5e7eb;
+    }
+
+    .tabs {
+        grid-area: tabs;
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        background: #e5e7eb;
+    }
+
+    .tab1,
+    .tab2,
+    .tab3 {
+        padding: 10px;
+        border-right: 1px solid #ccc;
+        cursor: pointer;
+        border-bottom: 2px solid transparent;
+    }
+
+    .tab1 {
+        background: #dbeafe;
+    }
+
+    .tab2 {
+        background: #e0f2fe;
+    }
+
+    .tab3 {
+        background: #f0f9ff;
+        border-right: none;
+    }
+
+    .active {
+        background: white !important;
+        border-bottom: 2px solid #1e40af !important;
     }
 
     .main {
         grid-area: main;
         background: white;
+        height: 100%;
+    }
+
+    .tab-content {
+        display: none;
+        height: 100%;
+    }
+
+    .tab-content.active {
+        display: block;
     }
 
     .output {
@@ -56,97 +103,172 @@
         color: white;
     }
 
-
-    /* ---------  styles for the tab------------ */
-    /* ---------  styles for the tab------------ */
-
-    /* Set height of body and the document to 100% to enable "full page tabs" */
-    body,
-    html {
-        height: 100%;
-        margin: 0;
-        font-family: Arial;
-    }
-
-    /* Style tab links */
-    .tablink {
-        background-color: #555;
-        color: white;
-        float: left;
-        border: none;
-        outline: none;
-        cursor: pointer;
-        padding: 14px 16px;
-        font-size: 17px;
-        width: 25%;
-    }
-
-    .tablink:hover {
-        background-color: #777;
-    }
-
-    /* Style the tab content (and add height:100% for full page content) */
-    .tabcontent {
-        color: white;
-        display: none;
-        padding: 100px 20px;
-        height: 100%;
-    }
-
-    #Home {
-        background-color: red;
-    }
-
-    #News {
-        background-color: green;
-    }
-
-    #Contact {
-        background-color: blue;
-    }
-
-    #About {
-        background-color: orange;
+    #map {
+        height: 50%;
+        width: 60%;
+        border: 1px solid #7f7373ff
     }
 </style>
-
 
 <body>
     <div class="container">
         <div class="header">Weather Dashboard</div>
-        <div class="nav">Navigation</div>
-
-        <div class="main">
-            <button class="tablink" onclick="openPage('Home', this, 'red')">Home</button>
-            <button class="tablink" onclick="openPage('News', this, 'green')" id="defaultOpen">News</button>
-            <button class="tablink" onclick="openPage('Contact', this, 'blue')">Contact</button>
-            <button class="tablink" onclick="openPage('About', this, 'orange')">About</button>
-
-
-            <div id="Home" class="tabcontent">
-                <h3>Home</h3>
-                <p>Home is where the heart is..</p>
-            </div>
-
-            <div id="News" class="tabcontent">
-                <h3>News</h3>
-                <p>Some news this fine day!</p>
-            </div>
-
-            <div id="Contact" class="tabcontent">
-                <h3>Contact</h3>
-                <p>Get in touch, or swing by for a cup of coffee.</p>
-            </div>
-
-            <div id="About" class="tabcontent">
-                <h3>About</h3>
-                <p>Who we are and what we do.</p>
-            </div>
-
+        <div class="nav">Navigation<br>• Dashboard<br>• Map<br>• Settings</div>
+        <div class="tabs">
+            <div class="tab1 active" onclick="switchTab(1)">Get FWI by latlon</div>
+            <div class="tab2" onclick="switchTab(2)">Get FWI by Map</div>
+            <div class="tab3" onclick="switchTab(3)">Get FWI by place names</div>
         </div>
-        <div class="output">Weather Insights</div>
-        <div class="footer">© 2023 Weather Dashboard</div>
+        <div class="main">
+            <div class="tab-content active">
+                <h2>Uplate Coordinates for FWI data</h2>
+                <table id="coordsTable">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Latitude</th>
+                            <th>Longitude</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td><input type="number" step="0.0001" value="-15.0"></td>
+                            <td><input type="number" step="0.0001" value="27.0"></td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td><input type="number" step="0.0001" value="-16.0"></td>
+                            <td><input type="number" step="0.0001" value="28.0"></td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td><input type="number" step="0.0001" value="-14.5"></td>
+                            <td><input type="number" step="0.0001" value="26.5"></td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td><input type="number" step="0.0001" value="-15.5"></td>
+                            <td><input type="number" step="0.0001" value="27.5"></td>
+                        </tr>
+                        <tr>
+                            <td>5</td>
+                            <td><input type="number" step="0.0001" value="-15.2"></td>
+                            <td><input type="number" step="0.0001" value="27.2"></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <button id="getWeatherBtn">Get Weather for All Points</button>
+
+                <h3>Weather Results:</h3>
+                <div id="resultsContainer">Weather data will appear here.</div>
+
+            </div>
+            <div class="tab-content">
+                <small>Get fwi by Map</small>
+                <div id="map"></div>
+
+            </div>
+            <div class=" tab-content">
+                <p>Get fwi by pre-defined names</p>
+            </div>
+        </div>
+        <div class="output">Today's Insight:<br>Perfect weather for outdoor activities</div>
+        <div class="footer">© 2023 Weather Dashboard | Last updated: Today</div>
     </div>
+    <script>
+        function switchTab(tabNum) {
+            document.querySelectorAll('.tab1, .tab2, .tab3')
+                .forEach(tab => tab.classList.remove('active'));
+
+            document.querySelectorAll('.tab-content')
+                .forEach(content => content.classList.remove('active'));
+
+            document.querySelector('.tab' + tabNum).classList.add('active');
+            document.querySelectorAll('.tab-content')[tabNum - 1].classList.add('active');
+
+            // ✅ Fix Leaflet resize issue
+            if (tabNum === 2) {
+                setTimeout(() => {
+                    map.invalidateSize();
+                }, 100);
+            }
+        }
+
+
+        // Map
+        // Initialize Map
+        var map = L.map('map').setView([-15, 27], 5);
+
+        // Add OpenStreetMap Basemap
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 18
+        }).addTo(map);
+
+        // Handle Get Weather Button Click
+        document.getElementById("getWeatherBtn").addEventListener("click", function () {
+            let table = document.getElementById("coordsTable").getElementsByTagName("tbody")[0];
+            let rows = table.getElementsByTagName("tr");
+            let coords = [];
+
+            for (let r of rows) {
+                let lat = r.cells[1].children[0].value;
+                let lon = r.cells[2].children[0].value;
+                if (lat && lon) {
+                    coords.push({ lat: lat, lon: lon });
+                }
+            }
+
+            fetch("/get_weather_multi", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ coords: coords })
+            })
+                .then(res => res.json())
+                .then(data => renderResults(data))
+                .catch(err => {
+                    document.getElementById("resultsContainer").innerHTML = "Error fetching data.";
+                });
+        });
+
+        function renderResults(results) {
+            let html = `
+        <table>
+            <tr>
+                <th>#</th>
+                <th>Latitude</th>
+                <th>Longitude</th>
+                <th>Location</th>
+                <th>Weather</th>
+                <th>Temp (°C)</th>
+                <th>Humidity</th>
+                <th>Wind (m/s)</th>
+            </tr>
+        `;
+
+            results.forEach((item, index) => {
+                let d = item.data;
+                let tempC = (d.main.temp - 273.15).toFixed(2);
+
+                html += `
+            <tr>
+                <td>${index + 1}</td>
+                <td>${item.lat}</td>
+                <td>${item.lon}</td>
+                <td>${d.name || "Unknown"}, ${d.sys.country || ""}</td>
+                <td>${d.weather[0].description}</td>
+                <td>${tempC}</td>
+                <td>${d.main.humidity}%</td>
+                <td>${d.wind.speed}</td>
+            </tr>
+            `;
+            });
+
+            html += `</table>`;
+            document.getElementById("resultsContainer").innerHTML = html;
+        }
+    </script>
 </body>
 
 </html>

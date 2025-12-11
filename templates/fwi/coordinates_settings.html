@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<body>
+    <div class="settings-container">
+        {% include "header.html" %}
+        <div id="settings">
+            <nav id="left-settings" class="sidebar-title">
+                <div class="nav-item sidebar-title">
+                    <a href="#"><i class="fas fa-cog"></i> Settings</a>
+                </div>
+                <div>Fire detection alerts</div>
+                <a class="redirect" href="{{ url_for('coordinates_settings') }}">Weather & FWI Coordinates</a>
+            </nav>
+
+            <main id="main-settings">
+                <div class="container">
+                    <h2>Uplate Coordinates for FWI data</h2>
+                    <table id="coordsTable">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Latitude</th>
+                                <th>Longitude</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td><input type="number" step="0.0001" value="-15.0"></td>
+                                <td><input type="number" step="0.0001" value="27.0"></td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td><input type="number" step="0.0001" value="-16.0"></td>
+                                <td><input type="number" step="0.0001" value="28.0"></td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td><input type="number" step="0.0001" value="-14.5"></td>
+                                <td><input type="number" step="0.0001" value="26.5"></td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td><input type="number" step="0.0001" value="-15.5"></td>
+                                <td><input type="number" step="0.0001" value="27.5"></td>
+                            </tr>
+                            <tr>
+                                <td>5</td>
+                                <td><input type="number" step="0.0001" value="-15.2"></td>
+                                <td><input type="number" step="0.0001" value="27.2"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <button id="getWeatherBtn">Get Weather for All Points</button>
+
+                    <h3>Weather Results:</h3>
+                    <div id="resultsContainer">Weather data will appear here.</div>
+
+                </div>
+                <script>
+                    document.getElementById("getWeatherBtn").addEventListener("click", function () {
+                        let table = document.getElementById("coordsTable").getElementsByTagName("tbody")[0];
+                        let rows = table.getElementsByTagName("tr");
+                        let coords = [];
+
+                        for (let r of rows) {
+                            let lat = r.cells[1].children[0].value;
+                            let lon = r.cells[2].children[0].value;
+                            if (lat && lon) {
+                                coords.push({ lat: lat, lon: lon });
+                            }
+                        }
+
+                        fetch("/get_weather_multi", {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({ coords: coords })
+                        })
+                            .then(res => res.json())
+                            .then(data => renderResults(data))
+                            .catch(err => {
+                                document.getElementById("resultsContainer").innerHTML = "Error fetching data.";
+                            });
+                    });
+
+                    function renderResults(results) {
+                        let html = `
+        <table>
+            <tr>
+                <th>#</th>
+                <th>Latitude</th>
+                <th>Longitude</th>
+                <th>Location</th>
+                <th>Weather</th>
+                <th>Temp (°C)</th>
+                <th>Humidity</th>
+                <th>Wind (m/s)</th>
+            </tr>
+        `;
+
+                        results.forEach((item, index) => {
+                            let d = item.data;
+                            let tempC = (d.main.temp - 273.15).toFixed(2);
+
+                            html += `
+            <tr>
+                <td>${index + 1}</td>
+                <td>${item.lat}</td>
+                <td>${item.lon}</td>
+                <td>${d.name || "Unknown"}, ${d.sys.country || ""}</td>
+                <td>${d.weather[0].description}</td>
+                <td>${tempC}</td>
+                <td>${d.main.humidity}%</td>
+                <td>${d.wind.speed}</td>
+            </tr>
+            `;
+                        });
+
+                        html += `</table>`;
+                        document.getElementById("resultsContainer").innerHTML = html;
+                    }
+                </script>
+
+            </main>
+        </div>
+    </div>
+</body>
+
+{% include 'footer.html' %}
+
+{% endblock %}

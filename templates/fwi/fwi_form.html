@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<body>
+    <div class="settings-container">
+        {% include "header.html" %}
+        <div id="settings">
+            <nav id="left-settings" class="sidebar-title">
+                <div class="nav-item sidebar-title">
+                    <a href="{{ url_for('coordinates_settings') }}"><i class="fas fa-cog"></i> Get FWI by Coordinates</a>
+                </div>
+
+                <div class="nav-item sidebar-title">
+                    <a href="{{ url_for('coordinates_settings') }}"><i class="fas fa-cog"></i> Get FWI by form</a>
+                </div>
+
+                <div class="nav-item sidebar-title">
+                    <a href="{{ url_for('coordinates_settings') }}"><i class="fas fa-cog"></i> Get WFI by place name</a>
+                </div>
+
+
+                  
+            </nav>
+    <div class="container">
+        <h2>Get Weather by Coordinates</h2>
+
+                    <h2>Get Weather by Coordinates</h2>
+
+                    <form id="weatherForm">
+                        <label>Latitude</label>
+                        <input type="text" id="lat" placeholder="-15" required>
+
+                        <label>Longitude</label>
+                        <input type="text" id="lon" placeholder="27" required>
+
+                        <button type="submit">Get Weather</button>
+                    </form>
+
+                    <h3>API Response:</h3>
+                    <pre id="output">Waiting...</pre>
+    <script>
+                document.getElementById("weatherForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    const lat = document.getElementById("lat").value;
+    const lon = document.getElementById("lon").value;
+
+    fetch("/get_weather", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: `lat=${lat}&lon=${lon}`
+    })
+    .then(res => res.json())
+    .then(data => {
+        const seaLevel = data.main.sea_level ?? "N/A";
+        const tempMinC = (data.main.temp_min - 273.15).toFixed(1);
+        const windSpeed = data.wind.speed;
+
+        document.getElementById("output").innerHTML = `
+            <ul>
+                <li><strong>Sea Level Pressure:</strong> ${seaLevel} hPa</li>
+                <li><strong>Min Temperature:</strong> ${tempMinC} °C</li>
+                <li><strong>Wind Speed:</strong> ${windSpeed} m/s</li>
+            </ul>
+        `;
+    })
+    .catch(() => {
+        document.getElementById("output").textContent = "Error fetching data.";
+    });
+});
+    </script>
+
+</body>
+
+{% include 'footer.html' %}
+
+{% endblock %}
