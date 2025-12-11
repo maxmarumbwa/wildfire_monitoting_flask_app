@@ -1,10 +1,9 @@
 {% extends "base.html" %}
 
 {% block content %}
-
 <div class="settings-container">
     {% include "header.html" %}
-
+    
     <div id="settings">
         <nav id="left-settings" class="sidebar-title">
             <div class="nav-item sidebar-title">
@@ -17,16 +16,16 @@
                 <a href="{{ url_for('fwi_map') }}"><i class="fas fa-cog"></i> Get FWI by Map</a>
             </div>
             <div class="nav-item sidebar-title">
-                <a href="{{ url_for('fwi_place') }}"><i class="fas fa-cog"></i> Get WFI by Place Name</a>
+                <a href="{{ url_for('fwi_place_page') }}"><i class="fas fa-cog"></i> Get FWI by Place Name</a>
             </div>
         </nav>
-
+        
         <div class="container">
             <h2>Get Weather by Place Name</h2>
-
+            
             <form id="weatherForm">
-                <label>Select Town in Zimbabwe</label>
-                <select id="town" required>
+                <label for="town">Select Town in Zimbabwe</label>
+                <select id="town" name="town" required>
                     <option value="" disabled selected>Select a town</option>
                     <option value="Harare">Harare</option>
                     <option value="Bulawayo">Bulawayo</option>
@@ -41,47 +40,87 @@
                     <option value="Kadoma">Kadoma</option>
                     <option value="Marondera">Marondera</option>
                 </select>
-
+                
                 <button type="submit">Get Weather</button>
             </form>
-
-            <h3>API Response:</h3>
-            <pre id="output">Waiting...</pre>
+            
+            <h3>Weather Information:</h3>
+            <div id="output">Waiting for selection...</div>
         </div>
-
-        <script>
-            document.getElementById("weatherForm").addEventListener("submit", function (e) {
-                e.preventDefault();
-
-                const town = document.getElementById("town").value;
-
-                fetch("/fwi/place", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-                    body: `place=${town}`
-                })
-                .then(res => res.json())
-                .then(data => {
-                    const seaLevel = data.main.sea_level ?? "N/A";
-                    const tempMinC = (data.main.temp_min - 273.15).toFixed(1);
-                    const windSpeed = data.wind.speed;
-
-                    document.getElementById("output").innerHTML = `
-                        <ul>
-                            <li><strong>Sea Level Pressure:</strong> ${seaLevel} hPa</li>
-                            <li><strong>Min Temperature:</strong> ${tempMinC} °C</li>
-                            <li><strong>Wind Speed:</strong> ${windSpeed} m/s</li>
-                        </ul>
-                    `;
-                })
-                .catch(() => {
-                    document.getElementById("output").textContent = "Error fetching data.";
-                });
-            });
-        </script>
-
-        {% include 'footer.html' %}
     </div>
+    
+    {% include 'footer.html' %}
 </div>
 
+<script>
+    document.getElementById("weatherForm").addEventListener("submit", function (e) {
+        e.preventDefault();
+        
+        const town = document.getElementById("town").value;
+        
+        if (!town) {
+            document.getElementById("output").innerHTML = "<p style='color: red;'>Please select a town.</p>";
+            return;
+        }
+        
+        // Show loading message
+        document.getElementById("output").innerHTML = "<p>Fetching weather data for " + town + "...</p>";
+        
+        fetch("/fwi/place", {
+            method: "POST",
+            headers: { 
+                "Content-Type": "application/x-www-form-urlencoded" 
+            },
+            body: `place=${encodeURIComponent(town)}`
+        })
+        .then(res => {
+            if (!res.ok) {
+                throw new Error(`HTTP error! Status: ${res.status}`);
+            }
+            return res.json();
+        })
+        .then(data => {
+            console.log("Response data:", data); // For debugging
+            
+            // Check for error in response
+            if (data.error) {
+                document.getElementById("output").innerHTML = 
+                    `<p style='color: red;'>Error: ${data.error}</p>`;
+                return;
+            }
+            
+            // Check if weather data exists
+            if (!data.main || !data.weather) {
+                document.getElementById("output").innerHTML = 
+                    `<p style='color: red;'>Invalid weather data received</p>`;
+                return;
+            }
+            
+            // Extract and display weather information
+            const seaLevel = data.main.sea_level ?? "N/A";
+            const tempMinC = data.main.temp_min ? (data.main.temp_min - 273.15).toFixed(1) : "N/A";
+            const windSpeed = data.wind?.speed ?? "N/A";
+            const temperature = data.main.temp ? (data.main.temp - 273.15).toFixed(1) : "N/A";
+            const humidity = data.main.humidity ?? "N/A";
+            const weatherDesc = data.weather[0]?.description ?? "N/A";
+            
+            document.getElementById("output").innerHTML = `
+                <h4>Weather for ${town}:</h4>
+                <ul>
+                    <li><strong>Weather:</strong> ${weatherDesc}</li>
+                    <li><strong>Temperature:</strong> ${temperature} °C</li>
+                    <li><strong>Min Temperature:</strong> ${tempMinC} °C</li>
+                    <li><strong>Humidity:</strong> ${humidity}%</li>
+                    <li><strong>Sea Level Pressure:</strong> ${seaLevel} hPa</li>
+                    <li><strong>Wind Speed:</strong> ${windSpeed} m/s</li>
+                </ul>
+            `;
+        })
+        .catch(error => {
+            console.error("Fetch error:", error);
+            document.getElementById("output").innerHTML = 
+                `<p style='color: red;'>Error fetching data: ${error.message}</p>`;
+        });
+    });
+</script>
 {% endblock %}
