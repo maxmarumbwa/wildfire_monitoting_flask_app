@@ -3,70 +3,72 @@
 <head>
     <title>Fire Dashboard</title>
     <style>
-        body { margin: 0; font-family: Arial; background: #f5f5f5; height: 100vh; overflow: hidden; }
- .dashboard{
-    display: grid;
- }
- .nav{
-    display:grid;
-    background: red
- }
-  .cards{
-    display:grid;
-    background: blue
- }
-  .charts{
-    display:grid;
-    background: grey
- }
-  .table{
-    display:grid;
-    background: green
- }
+        body {
+            margin: 0;
+            font-family: Arial;
+            background: #f5f5f5;
+            height: 100vh;
+        }
+
+        .dashboard {
+            display: grid;
+            height: 100vh;
+            grid-template-columns: 300px 1fr 1fr 1fr;
+            grid-template-rows: 90px 400px 1fr;
+            grid-template-areas:
+                "nav card1 card2 card3"
+                "nav bar-chart pie-chart pie-chart"
+                "nav table table table";
+            gap: 10px;
+            padding: 10px;
+        }
+
+        .nav        { grid-area: nav; background: red; }
+        .card1      { grid-area: card1; background: blue; }
+        .card2      { grid-area: card2; background: cyan; }
+        .card3      { grid-area: card3; background: pink; }  /* FIXED */
+        .bar-chart  { grid-area: bar-chart; background: grey; }
+        .pie-chart  { grid-area: pie-chart; background: grey; }
+        .table      { grid-area: table; background: green; overflow:auto; }
+
+        .card1, .card2, .card3,
+        .bar-chart, .pie-chart, .table, .nav {
+            padding: 10px;
+            border-radius: 6px;
+            color: white;
+        }
     </style>
 </head>
+
 <body>
+
     <div class="dashboard">
+
         <div class="nav">
             <h2>Fire Analytics</h2>
-            <div>
-                <input type="range" style="width: 150px;">
-                <input type="month" style="margin-left: 10px;">
-            </div>
+            <input type="range" style="width:150px;">
         </div>
 
-        <div class="cards">
-            <div class="card"><h3>Total Fires</h3><p>156</p></div>
-            <div class="card"><h3>High FRP</h3><p>42</p></div>
-            <div class="card"><h3>This Month</h3><p>28</p></div>
-        </div>
+        <div class="card1"><h3>Total Fires</h3><p>156</p></div>
+        <div class="card2"><h3>High FRP</h3><p>42</p></div>
+        <div class="card3"><h3>This Month</h3><p>28</p></div>
 
-        <div class="charts">
-            <div class="bar-chart">
-                <h3>Monthly Trend</h3>
-            </div>
-            <div class="pie-chart">
-                <h3> Monthly distibution</h3>
-            </div>
-        </div>
+        <div class="bar-chart"><h3>Monthly Trend</h3></div>
+
+        <div class="pie-chart"><h3>Monthly Distribution</h3></div>
+
         <div class="table">
             <h3>Fire Details</h3>
-            <div class="table-content">
-                <table>
-                    <thead><tr><th>ID</th><th>Date</th><th>District</th><th>FRP</th></tr></thead>
-                    <tbody>
-                        <tr><td>1</td><td>2024-01-15</td><td>North</td><td>45.2</td></tr>
-                        <tr><td>2</td><td>2024-01-16</td><td>South</td><td>78.5</td></tr>
-                        <tr><td>3</td><td>2024-01-17</td><td>East</td><td>32.1</td></tr>
-                        <tr><td>4</td><td>2024-01-18</td><td>West</td><td>67.8</td></tr>
-                        <tr><td>5</td><td>2024-01-19</td><td>Central</td><td>23.4</td></tr>
-                        <tr><td>6</td><td>2024-01-20</td><td>North</td><td>89.1</td></tr>
-                    </tbody>
-                </table>
-            </div>
+            <table>
+                <thead><tr><th>ID</th><th>Date</th><th>District</th><th>FRP</th></tr></thead>
+                <tbody>
+                    <tr><td>1</td><td>2024-01-15</td><td>North</td><td>45.2</td></tr>
+                    <tr><td>2</td><td>2024-01-16</td><td>South</td><td>78.5</td></tr>
+                </tbody>
+            </table>
         </div>
 
-
     </div>
+
 </body>
 </html>
