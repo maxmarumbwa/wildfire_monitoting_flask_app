@@ -1,6 +1,7 @@
 from flask import Flask, render_template, jsonify, request, session
 import json, os
 import requests
+import pandas as pd
 from dotenv import load_dotenv
 
 # Load environment variables
@@ -136,42 +137,24 @@ def save_weather():
 
 
 # Historical fire data
-@app.route("/data")
+@app.route("/fire_data")
 def fire_data():
-    return {
-        "years": [
-            2000,
-            2001,
-            2002,
-            2003,
-            2004,
-            2005,
-            2006,
-            2007,
-            2008,
-            2009,
-            2010,
-            2011,
-            2012,
-            2013,
-        ],
-        "incidents": [
-            120,
-            135,
-            160,
-            180,
-            210,
-            240,
-            260,
-            300,
-            280,
-            320,
-            350,
-            370,
-            390,
-            420,
-        ],
-    }
+    # Read CSV data using pandas
+    df = pd.read_csv("static/data/fire.csv")
+
+    # Calculate simple statistics
+    total_detections = len(df)
+    avg_frp = df["frp"].mean()
+
+    # Get all data for table
+    fire_data = df.to_dict("records")
+
+    return render_template(
+        "analytics/analytics_hist.html",
+        total_detections=total_detections,
+        avg_frp=avg_frp,
+        fire_data=fire_data,
+    )
 
 
 if __name__ == "__main__":
