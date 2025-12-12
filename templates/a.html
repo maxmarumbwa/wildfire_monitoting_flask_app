@@ -4,9 +4,18 @@
 {%include "head.html"%}
 
 <body>
-    {% include "header.html" %}
-    {% include "partials/leaflet_map.html" %}
 
+    <div class="map2">
+        {% include "header.html" %}
+        {% set map_center = (-17, 28) %}
+        {% set map_zoom = 8 %}
+        {% set geojson_url = "/static/data/zim_admin2.geojson" %}
+        {% set tile_url = "https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png" %}
+
+        {% include "partials/leaflet_map.html" %}
+
+
+    </div>
 </body>
 
 </html>

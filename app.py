@@ -168,12 +168,15 @@ def get_weather():
 # ---------Leaflet map settings ---
 # -------- Inject Leaflet settings into all templates --------#
 @app.context_processor
+@app.context_processor
 def leaflet_defaults():
     return {
-        "map_center": (-19, 30),
-        "map_zoom": 5,
+        "map_center": (-17, 30),
+        "map_zoom": 6,
         "tile_url": "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-        "geojson_url": "/static/data/fire_hotspot.geojson",  # absolute path recommended
+        "geojson_url": "/static/data/fire_hotspot.json",
+        # ADD THIS:
+        "map_style": "height:500px;width:80%;margin:auto;border-radius:8px;",
     }
 
 

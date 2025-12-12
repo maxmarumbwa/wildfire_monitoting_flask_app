@@ -102,6 +102,11 @@
             <p>42</p>
         </div>
         <div class="card3">
+            {% set map_center = (-17, 28) %}
+            {% set map_zoom = 8 %}
+            {% set geojson_url = "/static/data/zim_admin2.geojson" %}
+            {% set tile_url = "https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png" %}
+
             {% include "partials/leaflet_map.html" %}
 
         </div>
