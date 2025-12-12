@@ -96,7 +96,7 @@ def fwi_place():
 
 # ---------------- Analytics ----------------#
 # ------ Historical fire data and stats------
-@app.route("/analytics/hist")
+@app.route("/analytics")
 def analytics_hist():
     return render_template("analytics/analytics_hist.html")
 
@@ -146,6 +146,11 @@ def coordinates_settings_map():
     return render_template("coordinates_settings_map.html")
 
 
+@app.route("/a")
+def a():
+    return render_template("a.html")
+
+
 @app.route("/get_weather", methods=["POST"])
 def get_weather():
     lat = request.form.get("lat")
@@ -160,16 +165,16 @@ def get_weather():
     return jsonify(data)
 
 
-# post weather data to external pages
-@app.route("/weather_summary")
-def weather_summary():
-    return render_template("weather_summary.html", weather=session.get("weather"))
-
-
-@app.route("/save_weather", methods=["POST"])
-def save_weather():
-    session["weather"] = request.json
-    return jsonify({"status": "saved"})
+# ---------Leaflet map settings ---
+# -------- Inject Leaflet settings into all templates --------#
+@app.context_processor
+def leaflet_defaults():
+    return {
+        "map_center": (-19, 30),
+        "map_zoom": 5,
+        "tile_url": "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+        "geojson_url": "/static/data/fire_hotspot.geojson",  # absolute path recommended
+    }
 
 
 if __name__ == "__main__":

@@ -16,7 +16,7 @@
             display: grid;
             height: 100vh;
             grid-template-columns: 300px 1fr 1fr 1fr;
-            grid-template-rows: 30px 70px 300px 1fr;
+            grid-template-rows: 30px 130px 300px 1fr;
             grid-template-areas:
                 "header header header header"
                 "nav card1 card2 card3"
@@ -89,10 +89,12 @@
         <div class="nav">
             <h2>Fire Analytics</h2>
             <input type="range" style="width:150px;">
+            {% include "partials/leaflet_map.html" %}
+
         </div>
 
         <div class="card1">
-            <h3>Total Fires:{{total_detections}} </h3>
+            <h3>Total Fires:</h3>
             <p>156</p>
         </div>
         <div class="card2">
@@ -100,8 +102,8 @@
             <p>42</p>
         </div>
         <div class="card3">
-            <h3>This Month</h3>
-            <p>28</p>
+            {% include "partials/leaflet_map.html" %}
+
         </div>
 
         <div class="pie-chart" id="pie-chart">
