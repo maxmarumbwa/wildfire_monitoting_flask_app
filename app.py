@@ -151,6 +151,11 @@ def a():
     return render_template("a.html")
 
 
+@app.route("/b")
+def b():
+    return render_template("b.html")
+
+
 @app.route("/get_weather", methods=["POST"])
 def get_weather():
     lat = request.form.get("lat")
@@ -168,14 +173,12 @@ def get_weather():
 # ---------Leaflet map settings ---
 # -------- Inject Leaflet settings into all templates --------#
 @app.context_processor
-@app.context_processor
 def leaflet_defaults():
     return {
-        "map_center": (-17, 30),
-        "map_zoom": 6,
+        "map_center": (-12, 28),
+        "map_zoom": 5,
         "tile_url": "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-        "geojson_url": "/static/data/fire_hotspot.json",
-        # ADD THIS:
+        "geojson_url": "/static/data/zim_admin1.geojson",  # absolute path recommended
         "map_style": "height:500px;width:80%;margin:auto;border-radius:8px;",
     }
 

@@ -89,7 +89,12 @@
         <div class="nav">
             <h2>Fire Analytics</h2>
             <input type="range" style="width:150px;">
-            {% include "partials/leaflet_map.html" %}
+            {% set map_center = (-12, 28) %}
+            {% set map_zoom = 16 %}
+            {% set geojson_url = "/static/data/zim_admin0.geojson" %}
+            {% set tile_url = "https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png" %}
+            {% set map_style="height:200px;margin:auto;border:2px solid red;border-radius:12px;"%}
+            {% include "partials/leaflet_map.html"%}
 
         </div>
 
@@ -102,13 +107,7 @@
             <p>42</p>
         </div>
         <div class="card3">
-            {% set map_center = (-17, 28) %}
-            {% set map_zoom = 8 %}
-            {% set geojson_url = "/static/data/zim_admin2.geojson" %}
-            {% set tile_url = "https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png" %}
-
-            {% include "partials/leaflet_map.html" %}
-
+            <h3>Month </h3>
         </div>
 
         <div class="pie-chart" id="pie-chart">

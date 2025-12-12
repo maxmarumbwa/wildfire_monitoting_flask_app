@@ -4,18 +4,13 @@
 {%include "head.html"%}
 
 <body>
+    {% set map_center = (-12, 28) %}
+    {% set map_zoom = 16 %}
+    {% set geojson_url = "/static/data/zim_admin0.geojson" %}
+    {% set tile_url = "https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png" %}
+    {% set map_style="height:200px;width:10%;margin:auto;border:2px solid red;border-radius:12px;"%}
+    {% include "partials/leaflet_map.html"%}
 
-    <div class="map2">
-        {% include "header.html" %}
-        {% set map_center = (-17, 28) %}
-        {% set map_zoom = 8 %}
-        {% set geojson_url = "/static/data/zim_admin2.geojson" %}
-        {% set tile_url = "https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png" %}
-
-        {% include "partials/leaflet_map.html" %}
-
-
-    </div>
 </body>
 
 </html>

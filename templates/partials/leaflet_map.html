@@ -1,4 +1,4 @@
-<div id="map" style="height:450px;width:50%;margin:auto;border-radius:8px;"></div>
+<div id="map" style={{map_style}}></div>
 
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
@@ -17,22 +17,4 @@
             map.fitBounds(layer.getBounds());
         })
         .catch(err => console.error(err));
-</script>
-
-<script>
-    var center = {{ custom_center | default(map_center) }};
-    var zoom   = {{ custom_zoom   | default(map_zoom)   }};
-    var url    = "{{ custom_geojson_url | default(geojson_url) }}";
-    var tile   = "{{ custom_tile_url    | default(tile_url) }}";
-
-    var map = L.map('map').setView(center, zoom);
-
-    L.tileLayer(tile, { maxZoom: 18 }).addTo(map);
-
-    fetch(url)
-        .then(res => res.json())
-        .then(data => {
-            var layer = L.geoJSON(data).addTo(map);
-            map.fitBounds(layer.getBounds());
-        });
 </script>
