@@ -10,6 +10,7 @@ load_dotenv()
 app = Flask(__name__)
 app.secret_key = "dev-secret-key"  # REQUIRED for sessions
 
+
 # Load API key and base URL from .env
 API_KEY = os.getenv("OWM_API_KEY")
 BASE_URL = os.getenv("OWM_BASE_URL")
@@ -93,10 +94,45 @@ def fwi_place():
     return jsonify(response.json())
 
 
-# Analytics
+# ---------------- Analytics ----------------#
+# ------ Historical fire data and stats------
 @app.route("/analytics/hist")
 def analytics_hist():
     return render_template("analytics/analytics_hist.html")
+
+
+# Historical fire data and stats
+# @app.route("/fire")
+# def fire_data():
+#     # Read CSV data using pandas
+#     df = pd.read_csv("static/data/fire.csv")
+
+#     # Calculate simple statistics
+#     total_detections = len(df)
+#     avg_frp = df["frp"].mean()
+
+#     # Get all data for table
+#     fire_data = df.to_dict("records")
+
+#     return render_template(
+#         "analytics/analytics_hist.html",
+#         total_detections=total_detections,
+#         avg_frp=avg_frp,
+#         fire_data=fire_data,
+#     )
+
+
+# ------- Make data available to all pages--------
+# --- Use decorator
+df = pd.read_csv("static/data/fire1.csv")
+
+
+@app.context_processor
+def inject_fire_data():
+    total_detections = len(df)
+    avg_frp = df["frp"].mean()
+    fire_data = df.to_dict("records")
+    return dict(total_detections=total_detections, avg_frp=avg_frp, fire_data=fire_data)
 
 
 # display results external pages
@@ -134,27 +170,6 @@ def weather_summary():
 def save_weather():
     session["weather"] = request.json
     return jsonify({"status": "saved"})
-
-
-# Historical fire data
-@app.route("/fire_data")
-def fire_data():
-    # Read CSV data using pandas
-    df = pd.read_csv("static/data/fire.csv")
-
-    # Calculate simple statistics
-    total_detections = len(df)
-    avg_frp = df["frp"].mean()
-
-    # Get all data for table
-    fire_data = df.to_dict("records")
-
-    return render_template(
-        "analytics/analytics_hist.html",
-        total_detections=total_detections,
-        avg_frp=avg_frp,
-        fire_data=fire_data,
-    )
 
 
 if __name__ == "__main__":
