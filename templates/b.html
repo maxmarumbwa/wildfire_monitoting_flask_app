@@ -1,8 +1,5 @@
-<!DOCTYPE html>
 <html lang="en">
-
 {% include "head.html" %}
-
 <body>
 
 <div style="width:95%;margin:auto;display:flex;gap:20px;">
@@ -10,31 +7,36 @@
     <!-- CHECKBOX PANEL -->
     <div style="width:20%;">
         <h3>Map Layers</h3>
-
+        
         <label>
-            <input type="checkbox" class="layer-toggle" data-file="zim_admin0.geojson">
+            <input type="radio" name="layer-radio" class="layer-radio" value="zim_admin0.geojson">
             Zimbabwe Admin Level 0 (Country)
         </label><br>
-
+        
         <label>
-            <input type="checkbox" class="layer-toggle" data-file="zim_admin1.geojson">
+            <input type="radio" name="layer-radio" class="layer-radio" value="zim_admin1.geojson">
             Zimbabwe Admin Level 1 (Provinces)
         </label><br>
-
+        
         <label>
-            <input type="checkbox" class="layer-toggle" data-file="zim_admin2.geojson">
+            <input type="radio" name="layer-radio" class="layer-radio" value="zim_admin2.geojson">
             Zimbabwe Admin Level 2 (Districts)
         </label><br>
-
+        
         <label>
-            <input type="checkbox" class="layer-toggle" data-file="zim_airports.geojson">
+            <input type="radio" name="layer-radio" class="layer-radio" value="zim_airports.geojson">
             Airports
         </label><br>
-
+        
         <label>
-            <input type="checkbox" class="layer-toggle" data-file="fire_hotspot.geojson">
+            <input type="radio" name="layer-radio" class="layer-radio" value="fire_hotspot.geojson">
             Fire Hotspots
         </label><br>
+        
+        <label>
+            <input type="radio" name="layer-radio" class="layer-radio" value="none" checked>
+            None
+        </label>
     </div>
 
     <!-- MAP -->
@@ -43,6 +45,56 @@
     </div>
 
 </div>
+
+<script>
+// Store the current GeoJSON layer
+var currentGeoJSONLayer = null;
+
+// Function to update the map layer
+function updateMapLayer(geojsonFile) {
+    // Remove the old layer if it exists
+    if (currentGeoJSONLayer) {
+        map.removeLayer(currentGeoJSONLayer);
+        currentGeoJSONLayer = null;
+    }
+    
+    // If "none" is selected or file is empty, just return
+    if (geojsonFile === "none" || !geojsonFile) {
+        return;
+    }
+    
+    // Build the full URL to the GeoJSON file
+    var geojsonUrl = "/static/data/" + geojsonFile;
+    
+    // Fetch and add the new GeoJSON layer
+    fetch(geojsonUrl)
+        .then(res => res.json())
+        .then(data => {
+            currentGeoJSONLayer = L.geoJSON(data).addTo(map);
+            
+            // Fit the map to the bounds of the new layer
+            map.fitBounds(currentGeoJSONLayer.getBounds());
+        })
+        .catch(err => console.error("Error loading GeoJSON:", err));
+}
+
+// Add event listeners to all radio buttons
+document.querySelectorAll('.layer-radio').forEach(radio => {
+    radio.addEventListener('change', function() {
+        if (this.checked) {
+            updateMapLayer(this.value);
+        }
+    });
+});
+
+// Load initial layer if you want (optional)
+// document.addEventListener('DOMContentLoaded', function() {
+//     var initialRadio = document.querySelector('.layer-radio[checked]');
+//     if (initialRadio) {
+//         updateMapLayer(initialRadio.value);
+//     }
+// });
+</script>
 
 </body>
 </html>
