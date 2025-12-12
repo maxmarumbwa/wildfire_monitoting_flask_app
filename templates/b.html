@@ -1,10 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
 
-{%include "head.html"%}
+{% include "head.html" %}
 
 <body>
-    {% include "partials/leaflet_map.html" %}
-</body>
 
+<div style="width:95%;margin:auto;display:flex;gap:20px;">
+
+    <!-- CHECKBOX PANEL -->
+    <div style="width:20%;">
+        <h3>Map Layers</h3>
+
+        <label>
+            <input type="checkbox" class="layer-toggle" data-file="zim_admin0.geojson">
+            Zimbabwe Admin Level 0 (Country)
+        </label><br>
+
+        <label>
+            <input type="checkbox" class="layer-toggle" data-file="zim_admin1.geojson">
+            Zimbabwe Admin Level 1 (Provinces)
+        </label><br>
+
+        <label>
+            <input type="checkbox" class="layer-toggle" data-file="zim_admin2.geojson">
+            Zimbabwe Admin Level 2 (Districts)
+        </label><br>
+
+        <label>
+            <input type="checkbox" class="layer-toggle" data-file="zim_airports.geojson">
+            Airports
+        </label><br>
+
+        <label>
+            <input type="checkbox" class="layer-toggle" data-file="fire_hotspot.geojson">
+            Fire Hotspots
+        </label><br>
+    </div>
+
+    <!-- MAP -->
+    <div style="flex:1;">
+        {% include "partials/leaflet_map.html" %}
+    </div>
+
+</div>
+
+</body>
 </html>
