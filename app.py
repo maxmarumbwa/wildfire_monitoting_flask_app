@@ -183,5 +183,200 @@ def leaflet_defaults():
     }
 
 
+# ====================FIRE API ENDPOINTS ====================
+
+
+@app.route("/api/fires", methods=["GET"])
+def get_all_fires():
+    """Get all fire data"""
+    try:
+        # Convert to list of dictionaries
+        data = df.to_dict("records")
+        return jsonify({"success": True, "count": len(data), "data": data})
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 500
+
+
+@app.route("/api/fires/summary", methods=["GET"])
+def get_summary():
+    """Get summary statistics"""
+    try:
+        summary = {
+            "total_detections": int(len(df)),
+            "avg_frp": float(df["frp"].mean()),
+            "avg_brightness": float(df["brightness"].mean()),
+            "avg_confidence": float(df["confidence"].mean()),
+            "total_frp": float(df["frp"].sum()),
+            "day_count": int(len(df[df["daynight"] == "D"])),
+            "night_count": int(len(df[df["daynight"] == "N"])),
+            "satellite_a": int(len(df[df["satellite"] == "A"])),
+            "satellite_t": int(len(df[df["satellite"] == "T"])),
+        }
+        return jsonify({"success": True, "summary": summary})
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 500
+
+
+@app.route("/api/fires/filter", methods=["GET"])
+def filter_fires():
+    """Filter fires with query parameters"""
+    try:
+        filtered_df = df.copy()
+
+        # Get query parameters
+        min_confidence = request.args.get("min_confidence", type=float)
+        max_confidence = request.args.get("max_confidence", type=float)
+        min_frp = request.args.get("min_frp", type=float)
+        max_frp = request.args.get("max_frp", type=float)
+        satellite = request.args.get("satellite")
+        daynight = request.args.get("daynight")
+        date = request.args.get("date")
+
+        # Apply filters
+        if min_confidence is not None:
+            filtered_df = filtered_df[filtered_df["confidence"] >= min_confidence]
+        if max_confidence is not None:
+            filtered_df = filtered_df[filtered_df["confidence"] <= max_confidence]
+        if min_frp is not None:
+            filtered_df = filtered_df[filtered_df["frp"] >= min_frp]
+        if max_frp is not None:
+            filtered_df = filtered_df[filtered_df["frp"] <= max_frp]
+        if satellite:
+            filtered_df = filtered_df[filtered_df["satellite"] == satellite]
+        if daynight:
+            filtered_df = filtered_df[filtered_df["daynight"] == daynight]
+        if date:
+            filtered_df = filtered_df[filtered_df["acq_date"] == date]
+
+        # Sort if requested
+        sort_by = request.args.get("sort_by")
+        sort_order = request.args.get("sort_order", "asc")
+        if sort_by and sort_by in df.columns:
+            filtered_df = filtered_df.sort_values(
+                by=sort_by, ascending=(sort_order == "asc")
+            )
+
+        # Pagination
+        page = request.args.get("page", 1, type=int)
+        per_page = request.args.get("per_page", 50, type=int)
+        start_idx = (page - 1) * per_page
+        end_idx = start_idx + per_page
+
+        total_items = len(filtered_df)
+        paginated_df = filtered_df.iloc[start_idx:end_idx]
+
+        data = paginated_df.to_dict("records")
+
+        return jsonify(
+            {
+                "success": True,
+                "page": page,
+                "per_page": per_page,
+                "total_items": total_items,
+                "total_pages": (total_items + per_page - 1) // per_page,
+                "data": data,
+            }
+        )
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 500
+
+
+@app.route("/api/fires/top/<metric>", methods=["GET"])
+def get_top_fires(metric):
+    """Get top N fires by metric (brightness or frp)"""
+    try:
+        if metric not in ["brightness", "frp"]:
+            return (
+                jsonify(
+                    {"success": False, "error": 'Metric must be "brightness" or "frp"'}
+                ),
+                400,
+            )
+
+        n = request.args.get("n", 10, type=int)
+        top_df = df.nlargest(n, metric)
+
+        data = top_df.to_dict("records")
+
+        return jsonify(
+            {"success": True, "metric": metric, "count": len(data), "data": data}
+        )
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 500
+
+
+@app.route("/api/fires/by_date", methods=["GET"])
+def get_fires_by_date():
+    """Get fires grouped by date"""
+    try:
+        grouped = (
+            df.groupby("acq_date")
+            .agg(
+                {
+                    "frp": "sum",
+                    "brightness": "mean",
+                    "confidence": "mean",
+                    "latitude": "count",
+                }
+            )
+            .reset_index()
+        )
+
+        grouped.columns = [
+            "date",
+            "total_frp",
+            "avg_brightness",
+            "avg_confidence",
+            "fire_count",
+        ]
+
+        data = grouped.to_dict("records")
+
+        return jsonify({"success": True, "count": len(data), "data": data})
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 500
+
+
+@app.route("/api/fires/<int:index>", methods=["GET"])
+def get_fire_by_index(index):
+    """Get a specific fire by index"""
+    try:
+        if index < 0 or index >= len(df):
+            return jsonify({"success": False, "error": "Index out of range"}), 404
+
+        fire_data = df.iloc[index].to_dict()
+        return jsonify({"success": True, "data": fire_data})
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 500
+
+
+@app.route("/api/fires/search", methods=["GET"])
+def search_fires():
+    """Search fires by coordinates or date"""
+    try:
+        lat = request.args.get("lat", type=float)
+        lon = request.args.get("lon", type=float)
+        date = request.args.get("date")
+        tolerance = request.args.get("tolerance", 0.01, type=float)
+
+        filtered_df = df.copy()
+
+        if lat is not None and lon is not None:
+            # Search by approximate coordinates
+            filtered_df = filtered_df[
+                (abs(filtered_df["latitude"] - lat) <= tolerance)
+                & (abs(filtered_df["longitude"] - lon) <= tolerance)
+            ]
+
+        if date:
+            filtered_df = filtered_df[filtered_df["acq_date"] == date]
+
+        data = filtered_df.to_dict("records")
+
+        return jsonify({"success": True, "count": len(data), "data": data})
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 500
+
+
 if __name__ == "__main__":
     app.run(debug=True)
