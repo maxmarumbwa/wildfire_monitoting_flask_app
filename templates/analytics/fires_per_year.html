@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>FRP Trend</title>
+  <title>Fires per Year</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     body { font-family: Arial, sans-serif; background:#f5f5f5; margin:0; padding:20px; }
@@ -12,39 +12,81 @@
 </head>
 <body>
   <div class="card">
-    <h2>Yearly fire detections</h2>
-    <canvas id="frpTrendChart"></canvas>
+    <h2>🔥 Fires per Year</h2>
+
+    <label for="yearSelect"><strong>Filter by Year:</strong></label>
+    <select id="yearSelect">
+      <option value="all">All Years</option>
+    </select>
+
+    <canvas id="firesYearChart"></canvas>
   </div>
 
   <script>
-    fetch('/api/fires/summary/year')
-      .then(res => res.json())
-      .then(result => {
-        const data = result.data;
-        const years = data.map(d => d.year);
-        const fire_count = data.map(d => d.fire_count);
+  fetch('/api/fires/summary/year')
+    .then(res => res.json())
+    .then(result => {
 
-        new Chart(document.getElementById('frpTrendChart'), {
-          type: 'bar',
-          data: {
-            labels: years,
-            datasets: [{
-              label: 'Total Fire detections',
-              data: fire_count,
-              fill: false,
-              tension: 0.3
-            }]
-          },
-          options: {
-            responsive: true,
-            plugins: { legend: { display: true } },
-            scales: {
-              y: { beginAtZero: true, title: { display: true, text: 'Yearly fire detections' } },
-              x: { title: { display: true, text: 'Year' } }
-            }
-          }
-        });
+      console.log('API response:', result); // DEBUG
+
+      if (!result.success || !result.data || result.data.length === 0) {
+        alert('No data returned from API');
+        return;
+      }
+
+      const data = result.data;
+
+      const yearSelect = document.getElementById('yearSelect');
+      const years = data.map(d => d.year);
+      const counts = data.map(d => d.fire_count);
+
+      // Populate dropdown
+      years.forEach(year => {
+        const option = document.createElement('option');
+        option.value = year;
+        option.textContent = year;
+        yearSelect.appendChild(option);
       });
-  </script>
+
+      const ctx = document.getElementById('firesYearChart');
+      const chart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: years,
+          datasets: [{
+            label: 'Fire Detections',
+            data: counts
+          }]
+        },
+        options: {
+          responsive: true,
+          scales: {
+            y: { beginAtZero: true }
+          }
+        }
+      });
+
+      // Handle year change
+      yearSelect.addEventListener('change', () => {
+        const selectedYear = yearSelect.value;
+
+        if (selectedYear === 'all') {
+          chart.data.labels = years;
+          chart.data.datasets[0].data = counts;
+        } else {
+          const index = years.indexOf(parseInt(selectedYear));
+          chart.data.labels = [years[index]];
+          chart.data.datasets[0].data = [counts[index]];
+        }
+
+        chart.update();
+      });
+    })
+    .catch(err => {
+      console.error('Fetch error:', err);
+      alert('Failed to load fire data');
+    });
+</script>
+
 </body>
 </html>
