@@ -4,89 +4,136 @@
   <meta charset="UTF-8" />
   <title>Fires per Year</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
   <style>
-    body { font-family: Arial, sans-serif; background:#f5f5f5; margin:0; padding:20px; }
-    .card { background:#fff; padding:20px; border-radius:8px; max-width:900px; margin:auto; }
-    h2 { margin-bottom:10px; }
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      margin: 0;
+      padding: 20px;
+    }
+    .card {
+      background: #ffffff;
+      padding: 20px;
+      border-radius: 8px;
+      max-width: 900px;
+      margin: auto;
+    }
+    h2 {
+      margin-bottom: 15px;
+    }
+    label {
+      margin-right: 10px;
+    }
+    select {
+      margin-right: 20px;
+      padding: 5px;
+    }
   </style>
 </head>
+
 <body>
+
   <div class="card">
     <h2>🔥 Fires per Year</h2>
 
-    <label for="yearSelect"><strong>Filter by Year:</strong></label>
+    <!-- YEAR FILTER -->
+    <label for="yearSelect"><strong>Year:</strong></label>
     <select id="yearSelect">
       <option value="all">All Years</option>
     </select>
+
+    <!-- AVG FRP FILTER -->
+    <label for="frpSelect"><strong>Avg FRP:</strong></label>
+    <select id="frpSelect">
+      <option value="all">All</option>
+      <option value="10">≥ 10</option>
+      <option value="20">≥ 20</option>
+      <option value="30">≥ 30</option>
+      <option value="40">≥ 40</option>
+    </select>
+
+    <br><br>
 
     <canvas id="firesYearChart"></canvas>
   </div>
 
   <script>
-  fetch('/api/fires/summary/year')
-    .then(res => res.json())
-    .then(result => {
+    fetch('/api/fires/summary/year')
+      .then(res => res.json())
+      .then(result => {
 
-      console.log('API response:', result); // DEBUG
+        console.log('API data:', result);
 
-      if (!result.success || !result.data || result.data.length === 0) {
-        alert('No data returned from API');
-        return;
-      }
+        const data = result.data;
 
-      const data = result.data;
+        const yearSelect = document.getElementById('yearSelect');
+        const frpSelect = document.getElementById('frpSelect');
 
-      const yearSelect = document.getElementById('yearSelect');
-      const years = data.map(d => d.year);
-      const counts = data.map(d => d.fire_count);
+        // Extract arrays
+        const years = data.map(d => d.year);
+        const fireCounts = data.map(d => d.fire_count);
+        const avgFrp = data.map(d => d.avg_frp);
 
-      // Populate dropdown
-      years.forEach(year => {
-        const option = document.createElement('option');
-        option.value = year;
-        option.textContent = year;
-        yearSelect.appendChild(option);
-      });
+        // Populate year dropdown
+        years.forEach(year => {
+          const option = document.createElement('option');
+          option.value = year;
+          option.textContent = year;
+          yearSelect.appendChild(option);
+        });
 
-      const ctx = document.getElementById('firesYearChart');
-      const chart = new Chart(ctx, {
-        type: 'bar',
-        data: {
-          labels: years,
-          datasets: [{
-            label: 'Fire Detections',
-            data: counts
-          }]
-        },
-        options: {
-          responsive: true,
-          scales: {
-            y: { beginAtZero: true }
+        // Create chart
+        const ctx = document.getElementById('firesYearChart');
+        const chart = new Chart(ctx, {
+          type: 'bar',
+          data: {
+            labels: years,
+            datasets: [{
+              label: 'Fire Detections',
+              data: fireCounts
+            }]
+          },
+          options: {
+            responsive: true,
+            scales: {
+              y: { beginAtZero: true }
+            }
           }
+        });
+
+        // Apply filters
+        function applyFilters() {
+          const selectedYear = yearSelect.value;
+          const selectedFrp = frpSelect.value;
+
+          let filteredData = data;
+
+          if (selectedYear !== 'all') {
+            filteredData = filteredData.filter(
+              d => d.year === parseInt(selectedYear)
+            );
+          }
+
+          if (selectedFrp !== 'all') {
+            filteredData = filteredData.filter(
+              d => d.avg_frp >= parseFloat(selectedFrp)
+            );
+          }
+
+          chart.data.labels = filteredData.map(d => d.year);
+          chart.data.datasets[0].data = filteredData.map(d => d.fire_count);
+          chart.update();
         }
+
+        yearSelect.addEventListener('change', applyFilters);
+        frpSelect.addEventListener('change', applyFilters);
+
+      })
+      .catch(err => {
+        console.error('Error loading fire data:', err);
       });
-
-      // Handle year change
-      yearSelect.addEventListener('change', () => {
-        const selectedYear = yearSelect.value;
-
-        if (selectedYear === 'all') {
-          chart.data.labels = years;
-          chart.data.datasets[0].data = counts;
-        } else {
-          const index = years.indexOf(parseInt(selectedYear));
-          chart.data.labels = [years[index]];
-          chart.data.datasets[0].data = [counts[index]];
-        }
-
-        chart.update();
-      });
-    })
-    .catch(err => {
-      console.error('Fetch error:', err);
-      alert('Failed to load fire data');
-    });
-</script>
+  </script>
 
 </body>
 </html>
