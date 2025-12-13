@@ -1,8 +1,10 @@
 from flask import Flask, render_template, jsonify, request, session
 import json, os
 import requests
-import pandas as pd
 from dotenv import load_dotenv
+import geopandas as gpd
+import pandas as pd
+from shapely.geometry import Point
 
 # Load environment variables
 load_dotenv()
@@ -10,6 +12,9 @@ load_dotenv()
 app = Flask(__name__)
 app.secret_key = "dev-secret-key"  # REQUIRED for sessions
 
+## Load data
+df = pd.read_csv("static/data/modis_2001-2010.csv")
+# df = pd.read_csv("static/data/fire1.csv")
 
 # Load API key and base URL from .env
 API_KEY = os.getenv("OWM_API_KEY")
@@ -197,11 +202,63 @@ def leaflet_defaults():
 
 # ====================FIRE API ENDPOINTS ====================
 # ====================FIRE API ENDPOINTS ====================
+# fn to add prov name on fire location
+def build_df_prov(df):
+    import geopandas as gpd
+    from shapely.geometry import Point
 
-df = pd.read_csv("static/data/modis_2001-2010.csv")
-df_cur = pd.read_csv("static/data/fire1.csv")
+    # Copy – NEVER mutate df
+    df_work = df.copy()
+
+    # Parse date + year (safe)
+    df_work["acq_date"] = pd.to_datetime(df_work["acq_date"])
+    df_work["year"] = df_work["acq_date"].dt.year
+
+    # Build GeoDataFrame
+    gdf = gpd.GeoDataFrame(
+        df_work,
+        geometry=gpd.points_from_xy(df_work["longitude"], df_work["latitude"]),
+        crs="EPSG:4326",
+    )
+
+    # Load provinces
+    prov = gpd.read_file("static/data/zim_admin1.geojson")
+    prov = prov[["ADM1_EN", "geometry"]]
+
+    # Spatial join
+    gdf = gpd.sjoin(gdf, prov, how="left", predicate="within")
+
+    # Rename + cleanup
+    gdf = gdf.rename(columns={"ADM1_EN": "province"})
+    gdf = gdf.drop(columns=["index_right", "geometry"])
+
+    return pd.DataFrame(gdf)
 
 
+# Run the fn to test
+df_prov = build_df_prov(df)
+
+
+# Province + Year Summary API
+@app.route("/api/fires/summary/province-year")
+def summary_province_year():
+    grouped = (
+        df_prov.groupby(["province", "year"])
+        .agg(
+            fire_count=("latitude", "count"),
+            avg_frp=("frp", "mean"),
+            avg_confidence=("confidence", "mean"),
+        )
+        .reset_index()
+        .sort_values(["province", "year"])
+    )
+
+    return jsonify(
+        {"success": True, "count": len(grouped), "data": grouped.to_dict("records")}
+    )
+
+
+# get all fires -raw data
 @app.route("/api/fires", methods=["GET"])
 def get_all_fires():
     """Get all fire data"""
@@ -213,6 +270,7 @@ def get_all_fires():
         return jsonify({"success": False, "error": str(e)}), 500
 
 
+# yearly fire summary
 @app.route("/api/fires/summary/year", methods=["GET"])
 def get_summary_by_year():
     """Get fire summary grouped by year"""
@@ -223,7 +281,7 @@ def get_summary_by_year():
         yearly_summary = (
             df.groupby("year")
             .agg(
-                fire_count=("latitude", "count"),
+                fire_FMcount=("latitude", "count"),
                 avg_frp=("frp", "mean"),
                 avg_confidence=("confidence", "mean"),
                 fire_day_count=("daynight", lambda x: (x == "D").sum()),
