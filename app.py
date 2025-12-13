@@ -101,6 +101,18 @@ def analytics_hist():
     return render_template("analytics/analytics_hist.html")
 
 
+# Fire trends
+@app.route("/analytics/fires-per-year")
+def fires_per_year_page():
+    return render_template("analytics/fires_per_year.html")
+
+
+# Frp trends
+@app.route("/analytics/frp-trend")
+def frp_trend_page():
+    return render_template("analytics/frp_trend.html")
+
+
 # Historical fire data and stats
 # @app.route("/fire")
 # def fire_data():
@@ -124,14 +136,14 @@ def analytics_hist():
 
 # ------- Make data available to all pages--------
 # --- Use decorator
-df = pd.read_csv("static/data/fire1.csv")
+df_cur = pd.read_csv("static/data/fire1.csv")
 
 
 @app.context_processor
 def inject_fire_data():
-    total_detections = len(df)
-    avg_frp = df["frp"].mean()
-    fire_data = df.to_dict("records")
+    total_detections = len(df_cur)
+    avg_frp = df_cur["frp"].mean()
+    fire_data = df_cur.to_dict("records")
     return dict(total_detections=total_detections, avg_frp=avg_frp, fire_data=fire_data)
 
 
@@ -184,6 +196,10 @@ def leaflet_defaults():
 
 
 # ====================FIRE API ENDPOINTS ====================
+# ====================FIRE API ENDPOINTS ====================
+
+df = pd.read_csv("static/data/modis_2001-2010.csv")
+df_cur = pd.read_csv("static/data/fire1.csv")
 
 
 @app.route("/api/fires", methods=["GET"])
@@ -197,22 +213,29 @@ def get_all_fires():
         return jsonify({"success": False, "error": str(e)}), 500
 
 
-@app.route("/api/fires/summary", methods=["GET"])
-def get_summary():
-    """Get summary statistics"""
+@app.route("/api/fires/summary/year", methods=["GET"])
+def get_summary_by_year():
+    """Get fire summary grouped by year"""
     try:
-        summary = {
-            "total_detections": int(len(df)),
-            "avg_frp": float(df["frp"].mean()),
-            "avg_brightness": float(df["brightness"].mean()),
-            "avg_confidence": float(df["confidence"].mean()),
-            "total_frp": float(df["frp"].sum()),
-            "day_count": int(len(df[df["daynight"] == "D"])),
-            "night_count": int(len(df[df["daynight"] == "N"])),
-            "satellite_a": int(len(df[df["satellite"] == "A"])),
-            "satellite_t": int(len(df[df["satellite"] == "T"])),
-        }
-        return jsonify({"success": True, "summary": summary})
+        # Extract year from acq_date
+        df["year"] = pd.to_datetime(df["acq_date"]).dt.year
+
+        yearly_summary = (
+            df.groupby("year")
+            .agg(
+                fire_count=("latitude", "count"),
+                avg_frp=("frp", "mean"),
+                avg_confidence=("confidence", "mean"),
+                fire_day_count=("daynight", lambda x: (x == "D").sum()),
+                fire_night_count=("daynight", lambda x: (x == "N").sum()),
+            )
+            .reset_index()
+            .sort_values("year")
+        )
+
+        data = yearly_summary.to_dict("records")
+
+        return jsonify({"success": True, "count": len(data), "data": data})
     except Exception as e:
         return jsonify({"success": False, "error": str(e)}), 500
 

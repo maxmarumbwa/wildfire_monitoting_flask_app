@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>FRP Trend</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; background:#f5f5f5; margin:0; padding:20px; }
+    .card { background:#fff; padding:20px; border-radius:8px; max-width:900px; margin:auto; }
+    h2 { margin-bottom:10px; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2>📈 FRP Trend by Year</h2>
+    <canvas id="frpTrendChart"></canvas>
+  </div>
+
+  <script>
+    fetch('/api/fires/summary/year')
+      .then(res => res.json())
+      .then(result => {
+        const data = result.data;
+        const years = data.map(d => d.year);
+        const frp = data.map(d => d.avg_frp);
+
+        new Chart(document.getElementById('frpTrendChart'), {
+          type: 'line',
+          data: {
+            labels: years,
+            datasets: [{
+              label: 'Total FRP',
+              data: frp,
+              fill: false,
+              tension: 0.3
+            }]
+          },
+          options: {
+            responsive: true,
+            plugins: { legend: { display: true } },
+            scales: {
+              y: { beginAtZero: true, title: { display: true, text: 'Fire Radiative Power (MW)' } },
+              x: { title: { display: true, text: 'Year' } }
+            }
+          }
+        });
+      });
+  </script>
+</body>
+</html>
