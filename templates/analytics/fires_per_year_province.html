@@ -2,84 +2,83 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Fire Trends by Province</title>
+  <title>Fires per Province-Year</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f5f5f5;
-      padding: 20px;
-    }
-    .card {
-      background: #fff;
-      padding: 20px;
-      border-radius: 8px;
-      max-width: 1100px;
-      margin: auto;
-    }
-    h2 {
-      margin-bottom: 15px;
-    }
+    body { font-family: Arial, sans-serif; background: #f5f5f5; margin: 0; padding: 20px; }
+    .card { background: #fff; padding: 20px; border-radius: 8px; max-width: 1000px; margin: auto; }
+    h2 { margin-bottom: 15px; }
+    label { margin-right: 10px; }
+    input[type=range] { width: 300px; }
   </style>
 </head>
-
 <body>
 
 <div class="card">
-  <h2>🔥 Fire Trends per Province (2001–2010)</h2>
-  <canvas id="firesLineChart"></canvas>
+  <h2>🔥 Fires per Province-Year</h2>
+
+  <label for="yearSlider"><strong>Year:</strong></label>
+  <input type="range" id="yearSlider" min="2001" max="2010" step="1" value="2010">
+  <span id="yearValue">2010</span>
+
+  <canvas id="firesChart" style="margin-top:20px;"></canvas>
 </div>
 
 <script>
 fetch('/api/fires/summary/province-year')
   .then(res => res.json())
   .then(result => {
-
     const data = result.data;
 
-    // Unique years (sorted)
+    const provinces = [...new Set(data.map(d => d.province))].sort();
     const years = [...new Set(data.map(d => d.year))].sort();
 
-    // Unique provinces
-    const provinces = [...new Set(data.map(d => d.province))];
-
-    // Build datasets (one line per province)
-    const datasets = provinces.map(prov => {
-      const provData = data.filter(d => d.province === prov);
-
-      return {
-        label: prov,
-        data: years.map(y => {
-          const rec = provData.find(d => d.year === y);
-          return rec ? rec.fire_count : 0;
-        }),
-        fill: false,
-        tension: 0.3
-      };
-    });
-
-    const ctx = document.getElementById('firesLineChart');
-    new Chart(ctx, {
+    const ctx = document.getElementById('firesChart');
+    const chart = new Chart(ctx, {
       type: 'bar',
       data: {
-        labels: years,
-        datasets: datasets
+        labels: provinces,
+        datasets: years.map((year, i) => ({
+          label: year,
+          data: provinces.map(prov => {
+            const record = data.find(d => d.province === prov && d.year === year);
+            return record ? record.fire_count : 0;
+          }),
+          backgroundColor: `hsl(${i * 30 % 360}, 70%, 50%)`
+        }))
       },
       options: {
         responsive: true,
-        interaction: {
-          mode: 'index',
-          intersect: false
-        },
-        scales: {
-          y: { beginAtZero: true }
-        }
+        plugins: { legend: { display: true } },
+        scales: { y: { beginAtZero: true } }
       }
     });
 
+    const yearSlider = document.getElementById('yearSlider');
+    const yearValue = document.getElementById('yearValue');
+
+    function updateChart(year) {
+      yearValue.textContent = year;
+      chart.data.datasets = [{
+        label: year,
+        data: provinces.map(prov => {
+          const record = data.find(d => d.province === prov && d.year === year);
+          return record ? record.fire_count : 0;
+        }),
+        backgroundColor: 'steelblue'
+      }];
+      chart.update();
+    }
+
+    // Initial chart
+    updateChart(parseInt(yearSlider.value));
+
+    // Slider event
+    yearSlider.addEventListener('input', () => {
+      updateChart(parseInt(yearSlider.value));
+    });
   })
-  .catch(err => console.error(err));
+  .catch(err => console.error('Error loading fire data:', err));
 </script>
 
 </body>
