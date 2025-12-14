@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Fire Trends by Province</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      padding: 20px;
+    }
+    .card {
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      max-width: 1100px;
+      margin: auto;
+    }
+    h2 {
+      margin-bottom: 15px;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="card">
+  <h2>🔥 Fire Trends per Province (2001–2010)</h2>
+  <canvas id="firesLineChart"></canvas>
+</div>
+
+<script>
+fetch('/api/fires/summary/province-year')
+  .then(res => res.json())
+  .then(result => {
+
+    const data = result.data;
+
+    // Unique years (sorted)
+    const years = [...new Set(data.map(d => d.year))].sort();
+
+    // Unique provinces
+    const provinces = [...new Set(data.map(d => d.province))];
+
+    // Build datasets (one line per province)
+    const datasets = provinces.map(prov => {
+      const provData = data.filter(d => d.province === prov);
+
+      return {
+        label: prov,
+        data: years.map(y => {
+          const rec = provData.find(d => d.year === y);
+          return rec ? rec.fire_count : 0;
+        }),
+        fill: false,
+        tension: 0.3
+      };
+    });
+
+    const ctx = document.getElementById('firesLineChart');
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: years,
+        datasets: datasets
+      },
+      options: {
+        responsive: true,
+        interaction: {
+          mode: 'index',
+          intersect: false
+        },
+        scales: {
+          y: { beginAtZero: true }
+        }
+      }
+    });
+
+  })
+  .catch(err => console.error(err));
+</script>
+
+</body>
+</html>

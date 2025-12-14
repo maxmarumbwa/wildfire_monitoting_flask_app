@@ -14,7 +14,7 @@ app.secret_key = "dev-secret-key"  # REQUIRED for sessions
 
 ## Load data
 df = pd.read_csv("static/data/modis_2001-2010.csv")
-# df = pd.read_csv("static/data/fire1.csv")
+
 
 # Load API key and base URL from .env
 API_KEY = os.getenv("OWM_API_KEY")
@@ -110,6 +110,12 @@ def analytics_hist():
 @app.route("/analytics/fires-per-year")
 def fires_per_year_page():
     return render_template("analytics/fires_per_year.html")
+
+
+# Fire trends
+@app.route("/analytics/fires-per-year-province")
+def fires_per_year_page_provice():
+    return render_template("analytics/fires_per_year_province.html")
 
 
 # Frp trends
@@ -235,7 +241,7 @@ def build_df_prov(df):
     return pd.DataFrame(gdf)
 
 
-# Run the fn to test
+# Run the fn to create the ne gdf
 df_prov = build_df_prov(df)
 
 
