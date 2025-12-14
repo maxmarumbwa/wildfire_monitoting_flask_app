@@ -6,64 +6,87 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     body { font-family: Arial, sans-serif; background: #f5f5f5; margin: 0; padding: 20px; }
-    .card { background: #fff; padding: 20px; border-radius: 8px; max-width: 1200px; margin: auto; }
+    .card { background: #fff; padding: 20px; border-radius: 8px; max-width: 1000px; margin: auto; }
     h2 { margin-bottom: 15px; }
-    canvas { margin-top: 20px; }
+    label { margin-right: 10px; }
+    input[type=range] { width: 300px; }
   </style>
 </head>
 <body>
 
 <div class="card">
   <h2>🔥 Fires per Province-Year</h2>
-  <canvas id="firesChart"></canvas>
+
+  <label for="yearSlider"><strong>Year:</strong></label>
+  <input type="range" id="yearSlider" min="2001" max="2010" step="1" value="2010">
+  <span id="yearValue">2010</span>
+
+  <canvas id="firesChart" style="margin-top:20px;"></canvas>
 </div>
 
 <script>
-fetch('/api/fires/summary/province-year')
+// Changed this line to point to your localhost API
+fetch('http://localhost:5000/api/fires/summary/province-year')
   .then(res => res.json())
   .then(result => {
-    const data = result.data;
+    // If your API returns the data directly (not wrapped in a "data" property),
+    // change this line to: const data = result;
+    const data = result.data || result; // Handles both response formats
 
-    // Unique provinces and years
     const provinces = [...new Set(data.map(d => d.province))].sort();
     const years = [...new Set(data.map(d => d.year))].sort();
 
-    // Create dataset for each year
-    const datasets = years.map((year, i) => ({
-      label: year,
-      data: provinces.map(prov => {
-        const record = data.find(d => d.province === prov && d.year === year);
-        return record ? record.fire_count : 0;
-      }),
-      backgroundColor: `hsl(${i * 40 % 360}, 70%, 50%)`
-    }));
-
     const ctx = document.getElementById('firesChart');
-
     const chart = new Chart(ctx, {
       type: 'bar',
       data: {
         labels: provinces,
-        datasets: datasets
+        datasets: years.map((year, i) => ({
+          label: year,
+          data: provinces.map(prov => {
+            const record = data.find(d => d.province === prov && d.year === year);
+            return record ? record.fire_count : 0;
+          }),
+          backgroundColor: `hsl(${i * 30 % 360}, 70%, 50%)`
+        }))
       },
       options: {
         responsive: true,
-        plugins: {
-          legend: { position: 'top', onClick: (e, legendItem, legend) => {
-            const index = legendItem.datasetIndex;
-            const ci = legend.chart;
-            ci.getDatasetMeta(index).hidden = !ci.getDatasetMeta(index).hidden;
-            ci.update();
-          } }
-        },
-        scales: {
-          y: { beginAtZero: true, title: { display: true, text: 'Fire Count' } },
-          x: { title: { display: true, text: 'Province' } }
-        }
+        plugins: { legend: { display: true } },
+        scales: { y: { beginAtZero: true } }
       }
     });
+
+    const yearSlider = document.getElementById('yearSlider');
+    const yearValue = document.getElementById('yearValue');
+
+    function updateChart(year) {
+      yearValue.textContent = year;
+      chart.data.datasets = [{
+        label: year,
+        data: provinces.map(prov => {
+          const record = data.find(d => d.province === prov && d.year === year);
+          return record ? record.fire_count : 0;
+        }),
+        backgroundColor: 'steelblue'
+      }];
+      chart.update();
+    }
+
+    // Initial chart
+    updateChart(parseInt(yearSlider.value));
+
+    // Slider event
+    yearSlider.addEventListener('input', () => {
+      updateChart(parseInt(yearSlider.value));
+    });
   })
-  .catch(err => console.error('Error loading fire data:', err));
+  .catch(err => {
+    console.error('Error loading fire data:', err);
+    // Optional: Display error message
+    document.querySelector('.card').innerHTML += 
+      '<p style="color:red;">Failed to load data from API. Check if server is running.</p>';
+  });
 </script>
 
 </body>

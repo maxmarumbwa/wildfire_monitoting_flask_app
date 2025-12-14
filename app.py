@@ -124,6 +124,12 @@ def frp_trend_page():
     return render_template("analytics/frp_trend.html")
 
 
+# Frp trends
+@app.route("/analytics/yearly-prov-chropleth")
+def yearly_prov_chropleth():
+    return render_template("analytics/yearly_prov_chropleth.html")
+
+
 # Historical fire data and stats
 # @app.route("/fire")
 # def fire_data():
