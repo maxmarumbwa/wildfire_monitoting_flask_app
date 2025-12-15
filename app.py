@@ -5,17 +5,18 @@ from dotenv import load_dotenv
 import geopandas as gpd
 import pandas as pd
 from shapely.geometry import Point
+from flask_cors import CORS
 
 # Load environment variables
 load_dotenv()
 
 app = Flask(__name__)
+CORS(app)  # Enable CORS for all routes
 app.secret_key = "dev-secret-key"  # REQUIRED for sessions
 
 ## Load data
 df = pd.read_csv("static/data/modis_2001-2010.csv")
-
-
+# df = pd.read_csv("static/data/fire1.csv")
 # Load API key and base URL from .env
 API_KEY = os.getenv("OWM_API_KEY")
 BASE_URL = os.getenv("OWM_BASE_URL")
@@ -270,14 +271,77 @@ def summary_province_year():
     )
 
 
-# get all fires -raw data
+from flask import request, jsonify
+import pandas as pd
+
+# Assuming df is already loaded
+
+
+# Get all fires with pagination
+# http://localhost:5000/api/fires?page=1&per_page=50
+# http://localhost:5000/api/fires?page=2&per_page=100
 @app.route("/api/fires", methods=["GET"])
 def get_all_fires():
-    """Get all fire data"""
+    """Get all fire data with pagination"""
     try:
         # Convert to list of dictionaries
         data = df.to_dict("records")
-        return jsonify({"success": True, "count": len(data), "data": data})
+
+        # Get pagination parameters
+        page = request.args.get("page", default=1, type=int)
+        per_page = request.args.get("per_page", default=10, type=int)
+
+        # Calculate start and end indices
+        start_idx = (page - 1) * per_page
+        end_idx = start_idx + per_page
+
+        # Slice the data for pagination
+        paginated_data = data[start_idx:end_idx]
+
+        return jsonify(
+            {
+                "success": True,
+                "count": len(paginated_data),
+                "total": len(data),
+                "data": paginated_data,
+            }
+        )
+
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 500
+
+
+# get all fires -raw data - Filtered bt date
+@app.route("/api/fires-date", methods=["GET"])
+def get_all_fires_date():
+    """Get all fire data with optional date filtering"""
+    try:
+        # Copy to avoid breaking other endpoints
+        filtered_df = df.copy()
+
+        # Read query params
+        start_date = request.args.get("startDate")
+        end_date = request.args.get("endDate")
+
+        # Apply date filters
+        if start_date:
+            filtered_df = filtered_df[
+                pd.to_datetime(filtered_df["acq_date"]) >= pd.to_datetime(start_date)
+            ]
+
+        if end_date:
+            filtered_df = filtered_df[
+                pd.to_datetime(filtered_df["acq_date"]) <= pd.to_datetime(end_date)
+            ]
+
+        return jsonify(
+            {
+                "success": True,
+                "count": len(filtered_df),
+                "data": filtered_df.to_dict("records"),
+            }
+        )
+
     except Exception as e:
         return jsonify({"success": False, "error": str(e)}), 500
 
@@ -293,7 +357,7 @@ def get_summary_by_year():
         yearly_summary = (
             df.groupby("year")
             .agg(
-                fire_FMcount=("latitude", "count"),
+                fire_count=("latitude", "count"),
                 avg_frp=("frp", "mean"),
                 avg_confidence=("confidence", "mean"),
                 fire_day_count=("daynight", lambda x: (x == "D").sum()),

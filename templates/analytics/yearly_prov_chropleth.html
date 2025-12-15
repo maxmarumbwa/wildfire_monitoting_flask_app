@@ -2,12 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Fires Choropleth Map - 2003</title>
+  <title>Fires Choropleth Map 2003</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
   <style>
     body { margin:0; padding:0; }
-    #map { height: 90vh; width: 100%; }
-    .legend { background: white; padding: 10px; line-height: 1.5; }
+    #map { height: 100vh; width: 100%; }
   </style>
 </head>
 <body>
@@ -19,84 +18,43 @@
 // Initialize map
 const map = L.map('map').setView([-19.0, 29.5], 6);
 
-// Base map layer
+// Base layer
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
   attribution: '&copy; OpenStreetMap contributors'
 }).addTo(map);
 
-// Global variables
-let geojsonLayer;
-let fireData = [];
+// Color scale
+function getColor(count) {
+  return count > 10000 ? '#800026' :
+         count > 4500  ? '#BD0026' :
+         count > 3000  ? '#E31A1C' :
+         count > 1500  ? '#FC4E2A' :
+         count > 500   ? '#FEB24C' :
+         count > 0     ? '#FED976' :
+                         '#FFFFFF';
+}
 
-// Load province-year fire data
+// Load fire data for 2003
 fetch('/api/fires/summary/province-year')
   .then(res => res.json())
   .then(result => {
-    // Keep only year 2003
-    fireData = result.data.filter(d => d.year === 2003);
-    loadGeoJSON();
+    const fireData = result.data.filter(d => d.year === 2003);
+
+    // Load GeoJSON
+    fetch('/static/data/zim_admin1.geojson')
+      .then(res => res.json())
+      .then(geojson => {
+        L.geoJSON(geojson, {
+          style: feature => {
+            const province = feature.properties.ADM1_EN;
+            const record = fireData.find(d => d.province === province);
+            const count = record ? record.fire_count : 0;
+            return { fillColor: getColor(count), weight: 2, color: 'white', fillOpacity: 0.7 };
+          }
+        }).addTo(map);
+      });
   });
-
-// Load GeoJSON
-function loadGeoJSON() {
-  fetch('/static/data/zim_admin1.geojson')
-    .then(res => res.json())
-    .then(geojson => {
-      geojsonLayer = L.geoJSON(geojson, {
-        style: styleFeature,
-        onEachFeature: onEachFeature
-      }).addTo(map);
-    });
-}
-
-// Color scale function
-function getColor(count) {
-  return count > 10000 ? '#800026' :
-         count > 4500 ? '#BD0026' :
-         count > 3000 ? '#E31A1C' :
-         count > 1500  ? '#FC4E2A' :
-         count > 500  ? '#FEB24C' :
-         count > 0   ? '#FED976' :
-                       '#FFFFFF';
-}
-
-// Style each province
-function styleFeature(feature) {
-  const province = feature.properties.ADM1_EN;
-  const record = fireData.find(d => d.province === province);
-  const count = record ? record.fire_count : 0;
-
-  return {
-    fillColor: getColor(count),
-    weight: 2,
-    opacity: 1,
-    color: 'white',
-    dashArray: '3',
-    fillOpacity: 0.7
-  };
-}
-
-// Tooltip
-function onEachFeature(feature, layer) {
-  const province = feature.properties.ADM1_EN;
-  const record = fireData.find(d => d.province === province);
-  const count = record ? record.fire_count : 0;
-  layer.bindTooltip(`${province}: ${count} fires`, {sticky:true});
-}
-
-// Legend
-const legend = L.control({position: 'bottomright'});
-legend.onAdd = function () {
-  const div = L.DomUtil.create('div', 'legend');
-  const grades = [0, 500, 1500, 3000, 4500, 10000];
-  for (let i = 0; i < grades.length; i++) {
-    div.innerHTML +=
-      `<i style="background:${getColor(grades[i]+1)};width:18px;height:18px;display:inline-block;margin-right:5px;"></i> ${grades[i]}${grades[i+1] ? '&ndash;' + grades[i+1] + '<br>' : '+'}`;
-  }
-  return div;
-};
-legend.addTo(map);
-
 </script>
+
 </body>
 </html>
