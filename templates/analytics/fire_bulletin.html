@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Zimbabwe Wildfire Bulletin – {{ report_month }} {{ report_year }}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px;
+      color: #333;
+    }
+    h1, h2, h3 {
+      color: #b22222;
+    }
+    .section {
+      margin-bottom: 25px;
+    }
+    .highlight {
+      font-weight: bold;
+      color: #000;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    table, th, td {
+      border: 1px solid #ccc;
+    }
+    th, td {
+      padding: 8px;
+      text-align: center;
+    }
+    canvas {
+      max-height: 250px;
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- ================= HEADER ================= -->
+<h1>imbabwe Wildfire Bulletinn</h1>
+<h3>{{ report_month }} {{ report_year }}</h3>
+
+<hr>
+
+<!-- ================= PARAGRAPH 1: OVERVIEW ================= -->
+<div class="section">
+  <h2>1. Overview</h2>
+  <p>
+    During <span class="highlight">{{ report_month }} {{ report_year }}</span>,
+    a total of <span class="highlight">{{ fire_stats.total_fires }}</span> active
+    fire detections were recorded across Zimbabwe based on satellite
+    observations. The highest number of fires were observed in
+    <span class="highlight">{{ fire_stats.top_provinces[0] }}</span>,
+    <span class="highlight">{{ fire_stats.top_provinces[1] }}</span> and
+    <span class="highlight">{{ fire_stats.top_provinces[2] }}</span>,
+    indicating increased fire activity in these areas.
+  </p>
+</div>
+
+<!-- ================= PARAGRAPH 2: SPATIAL DISTRIBUTION ================= -->
+<div class="section">
+  <h2>2. Spatial Distribution of Fires</h2>
+  <p>
+    Analysis of fire detections by province shows that
+    <span class="highlight">{{ province_fire_counts[0].province }}</span>,
+    <span class="highlight">{{ province_fire_counts[1].province }}</span> and
+    <span class="highlight">{{ province_fire_counts[2].province }}</span>
+    recorded the highest number of fires this month. This spatial pattern
+    reflects seasonal burning practices combined with prevailing dry
+    conditions across parts of the region.
+  </p>
+
+  <canvas id="barChart"></canvas>
+</div>
+
+<!-- ================= PARAGRAPH 3: TEMPORAL ANALYSIS ================= -->
+<div class="section">
+  <h2>3. Temporal Fire Trends</h2>
+  <p>
+    The time-series analysis indicates a gradual increase in fire activity
+    during the middle of the reporting period, with a peak of
+    <span class="highlight">{{ time_series.max_fires }}</span> fires recorded on
+    <span class="highlight">{{ time_series.peak_date }}</span>.
+    This trend is consistent with reduced rainfall and higher temperatures.
+  </p>
+
+  <canvas id="timeSeriesChart"></canvas>
+</div>
+
+<!-- ================= PARAGRAPH 4: WEATHER OUTLOOK ================= -->
+<div class="section">
+  <h2>4. Weather Conditions</h2>
+  <p>
+    Weather conditions during the reporting period were generally favourable
+    for fire spread, characterised by high temperatures, low humidity and
+    limited rainfall. The table below summarises key weather indicators for
+    selected areas of interest.
+  </p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Location</th>
+        <th>Avg Temperature (°C)</th>
+        <th>Rainfall (mm)</th>
+        <th>Wind Speed (m/s)</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for w in weather_data %}
+      <tr>
+        <td>{{ w.location }}</td>
+        <td>{{ w.temperature }}</td>
+        <td>{{ w.rainfall }}</td>
+        <td>{{ w.wind_speed }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<!-- ================= PARAGRAPH 5: CONCLUSION ================= -->
+<div class="section">
+  <h2>5. Summary and Outlook</h2>
+  <p>
+    Overall, fire activity during <span class="highlight">{{ report_month }}</span>
+    remained significant in several hotspots across the country.
+    Continued monitoring using satellite data and near-real-time weather
+    information is essential to support early warning, preparedness and
+    response activities in fire-prone areas.
+  </p>
+</div>
+
+<!-- ================= CHART SCRIPTS ================= -->
+<script>
+  new Chart(document.getElementById('barChart'), {
+    type: 'bar',
+    data: {
+      labels: {{ bar_chart["labels"] | tojson }},
+      datasets: [{
+        label: 'Number of Fires',
+        data: {{ bar_chart["values"] | tojson }}
+      }]
+    }
+  });
+
+  new Chart(document.getElementById('timeSeriesChart'), {
+    type: 'line',
+    data: {
+      labels: {{ time_series["dates"] | tojson }},
+      datasets: [{
+        label: 'Daily Fire Detections',
+        data: {{ time_series["counts"] | tojson }},
+        fill: false
+      }]
+    }
+  });
+</script>
+
+
+</body>
+</html>

@@ -535,5 +535,39 @@ def search_fires():
         return jsonify({"success": False, "error": str(e)}), 500
 
 
+# Reporting
+@app.route("/report")
+def report():
+    return render_template(
+        "analytics/fire_bulletin.html",
+        report_month="August",
+        report_year=2025,
+        fire_stats={
+            "total_fires": 18432,
+            "top_provinces": ["Zambezia", "Katanga", "Eastern Province"],
+        },
+        province_fire_counts=[
+            {"province": "DRC", "count": 5200},
+            {"province": "Mozambique", "count": 4100},
+            {"province": "Zambia", "count": 3600},
+        ],
+        bar_chart={
+            "labels": ["Midlands", "Mat North", "Harare", "Bulawayo"],
+            "values": [5200, 4100, 3600, 950],
+        },
+        time_series={
+            "dates": ["2025-08-01", "2025-08-02", "2025-08-03"],
+            "counts": [320, 450, 610],
+            "max_fires": 610,
+            "peak_date": "2025-08-03",
+        },
+        weather_data=[
+            {"location": "Harare", "temperature": 29, "rainfall": 0, "wind_speed": 3.2},
+            {"location": "Gweru", "temperature": 31, "rainfall": 1, "wind_speed": 4.1},
+            {"location": "Mutare", "temperature": 28, "rainfall": 0, "wind_speed": 5.0},
+        ],
+    )
+
+
 if __name__ == "__main__":
     app.run(debug=True)
