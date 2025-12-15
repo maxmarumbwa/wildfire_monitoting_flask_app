@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wildfire Bulletin - {{ start_date }} to {{ end_date }}</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      line-height: 1.6;
+      background-color: #f8f9fa;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background-color: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    .header {
+      background-color: #dc3545;
+      color: white;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 25px;
+    }
+    .alert-banner {
+      background-color: #fff3cd;
+      border: 1px solid #ffc107;
+      border-radius: 5px;
+      padding: 12px;
+      margin: 20px 0;
+    }
+    .data-card {
+      background-color: #f8f9fa;
+      border-left: 4px solid #007bff;
+      padding: 15px;
+      margin: 15px 0;
+      border-radius: 4px;
+    }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      margin: 20px 0;
+    }
+    .stat-box {
+      background-color: #e9ecef;
+      padding: 15px;
+      border-radius: 5px;
+      text-align: center;
+    }
+    .stat-value {
+      font-size: 1.8em;
+      font-weight: bold;
+      color: #dc3545;
+    }
+    .stat-label {
+      font-size: 0.9em;
+      color: #6c757d;
+    }
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+    }
+    .data-table th {
+      background-color: #343a40;
+      color: white;
+    }
+    .data-table th, .data-table td {
+      border: 1px solid #dee2e6;
+      padding: 12px;
+      text-align: left;
+    }
+    .data-table tr:nth-child(even) {
+      background-color: #f8f9fa;
+    }
+    .chart-placeholder {
+      background-color: #f8f9fa;
+      border: 2px dashed #6c757d;
+      padding: 40px;
+      margin: 25px 0;
+      text-align: center;
+      border-radius: 8px;
+    }
+    .section {
+      margin-bottom: 30px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #e9ecef;
+    }
+    .footer {
+      margin-top: 40px;
+      padding-top: 20px;
+      border-top: 2px solid #6c757d;
+      font-size: 0.9em;
+      color: #6c757d;
+      text-align: center;
+    }
+    .risk-high { color: #dc3545; font-weight: bold; }
+    .risk-medium { color: #ffc107; font-weight: bold; }
+    .risk-low { color: #28a745; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <div class="header">
+      <h1>🌍 Southern Africa Wildfire Monitoring Bulletin</h1>
+      <p><strong>Report Period:</strong> {{ start_date }} to {{ end_date }}</p>
+      <p><strong>Generated:</strong> {{ report_date }}</p>
+    </div>
+
+    <!-- Alert Section -->
+    {% if fire_count.active > 20 %}
+    <div class="alert-banner">
+      <strong>⚠️ HIGH ALERT:</strong> {{ fire_count.active }} active fires requiring immediate attention.
+      Increased monitoring recommended for {{ regions.top_region.name }} region.
+    </div>
+    {% endif %}
+
+    <!-- Paragraph 1: Executive Summary -->
+    <div class="section">
+      <h2>1. Executive Summary</h2>
+      <p>
+        This bulletin reports wildfire activity across Southern Africa for the period 
+        <strong>{{ start_date }}</strong> to <strong>{{ end_date }}</strong>. A total of 
+        <strong>{{ fire_count.total }}</strong> fires were detected, with 
+        <strong>{{ fire_count.active }}</strong> currently active and requiring response teams. 
+        The most affected region was <strong>{{ regions.top_region.name }}</strong> with 
+        <strong>{{ regions.top_region.count }}</strong> incidents, followed by 
+        <strong>{{ regions.second_region.name }}</strong> ({{ regions.second_region.count }} fires) and 
+        <strong>{{ regions.third_region.name }}</strong> ({{ regions.third_region.count }} fires). 
+        Overall fire danger rating is <span class="risk-medium">{{ danger_rating.level }}</span> due to 
+        {{ danger_rating.factors }}.
+      </p>
+      
+      <!-- Quick Stats -->
+      <div class="stats-grid">
+        <div class="stat-box">
+          <div class="stat-value">{{ fire_count.total }}</div>
+          <div class="stat-label">Total Fires Detected</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-value">{{ fire_count.active }}</div>
+          <div class="stat-label">Active Fires</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-value">{{ statistics.total_area }} ha</div>
+          <div class="stat-label">Estimated Burn Area</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-value">{{ statistics.avg_size }} ha</div>
+          <div class="stat-label">Average Fire Size</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Paragraph 2: Time Series Analysis -->
+    <div class="section">
+      <h2>2. Temporal Analysis</h2>
+      <p>
+        Fire activity showed a <strong>{{ timeseries.trend }}</strong> trend during the reporting period. 
+        The peak day was <strong>{{ timeseries.peak_date }}</strong> with 
+        <strong>{{ timeseries.peak_count }}</strong> fires detected. Daily fire counts for the week were: 
+        {{ timeseries.daily_counts[0] }}, {{ timeseries.daily_counts[1] }}, 
+        {{ timeseries.daily_counts[2] }}, {{ timeseries.daily_counts[3] }}, 
+        {{ timeseries.daily_counts[4] }}, {{ timeseries.daily_counts[5] }}, and 
+        {{ timeseries.daily_counts[6] }} fires respectively.
+      </p>
+      
+      <div class="chart-placeholder">
+        <h3>📈 Fire Detection Timeline</h3>
+        <p><em>Chart URL: {{ charts.timeline_chart }}</em></p>
+        <p>Daily fire counts visualization showing {{ timeseries.trend }} pattern</p>
+      </div>
+    </div>
+
+    <!-- Paragraph 3: Geographic Distribution -->
+    <div class="section">
+      <h2>3. Geographic Distribution</h2>
+      <p>
+        Fire distribution shows concentration in the {{ regions.top_region.name }} region, 
+        accounting for approximately {{ ((regions.top_region.count / fire_count.total) * 100)|round|int }}% 
+        of all detected fires. Other significantly affected areas include 
+        {{ regions.second_region.name }} and {{ regions.third_region.name }}. 
+        Regional response teams have been deployed to priority zones.
+      </p>
+      
+      <div class="chart-placeholder">
+        <h3>🗺️ Regional Fire Distribution Map</h3>
+        <p><em>Map URL: {{ charts.regional_map }}</em></p>
+        <p>Heat map showing fire concentration across Southern Africa</p>
+      </div>
+      
+      <div class="data-card">
+        <h4>Top 3 Affected Regions</h4>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Region</th>
+              <th>Fire Count</th>
+              <th>Percentage</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>{{ regions.top_region.name }}</td>
+              <td>{{ regions.top_region.count }}</td>
+              <td>{{ ((regions.top_region.count / fire_count.total) * 100)|round(1) }}%</td>
+              <td><span class="risk-high">High Alert</span></td>
+            </tr>
+            <tr>
+              <td>{{ regions.second_region.name }}</td>
+              <td>{{ regions.second_region.count }}</td>
+              <td>{{ ((regions.second_region.count / fire_count.total) * 100)|round(1) }}%</td>
+              <td><span class="risk-medium">Monitoring</span></td>
+            </tr>
+            <tr>
+              <td>{{ regions.third_region.name }}</td>
+              <td>{{ regions.third_region.count }}</td>
+              <td>{{ ((regions.third_region.count / fire_count.total) * 100)|round(1) }}%</td>
+              <td><span class="risk-medium">Monitoring</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Paragraph 4: Weather Conditions -->
+    <div class="section">
+      <h2>4. Weather Conditions & Outlook</h2>
+      <p>
+        Current weather conditions indicate <span class="risk-medium">{{ weather.risk_level }}</span> fire risk. 
+        Average temperatures of <strong>{{ weather.avg_temp }}°C</strong>, relative humidity at 
+        <strong>{{ weather.humidity }}%</strong>, and wind speeds of 
+        <strong>{{ weather.wind_speed }} km/h</strong> from the {{ weather.wind_direction }} 
+        are contributing factors to fire behavior.
+      </p>
+      
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Location</th>
+            <th>Temperature (°C)</th>
+            <th>Humidity (%)</th>
+            <th>Wind Speed/Direction</th>
+            <th>Fire Risk Level</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>{{ weather.locations.main_area }}</td>
+            <td>{{ weather.locations.main_temp }}</td>
+            <td>{{ weather.locations.main_humidity }}</td>
+            <td>{{ weather.locations.main_wind }}</td>
+            <td><span class="risk-high">{{ weather.locations.main_risk }}</span></td>
+          </tr>
+          <tr>
+            <td>{{ weather.locations.secondary_area }}</td>
+            <td>{{ weather.locations.secondary_temp }}</td>
+            <td>{{ weather.locations.secondary_humidity }}</td>
+            <td>{{ weather.locations.secondary_wind }}</td>
+            <td><span class="risk-medium">{{ weather.locations.secondary_risk }}</span></td>
+          </tr>
+        </tbody>
+      </table>
+      
+      <div class="data-card">
+        <h4>72-Hour Forecast</h4>
+        <p><strong>Conditions:</strong> {{ forecast.conditions }}</p>
+        <p><strong>Precipitation Probability:</strong> {{ forecast.precipitation_probability }}%</p>
+        <p><strong>Temperature Range:</strong> {{ forecast.temp_min }}°C to {{ forecast.temp_max }}°C</p>
+      </div>
+    </div>
+
+    <!-- Paragraph 5: Recommendations & Resources -->
+    <div class="section">
+      <h2>5. Recommendations & Resource Deployment</h2>
+      <p>
+        Based on current fire activity and weather forecasts, the following actions are recommended: 
+        <strong>{{ recommendations.actions }}</strong>. Available response resources include 
+        <strong>{{ resources.aircraft }}</strong> aircraft and <strong>{{ resources.personnel }}</strong> 
+        ground personnel currently deployed across affected regions.
+      </p>
+      
+      <div class="data-card">
+        <h4>Key Recommendations</h4>
+        <ul>
+          <li>Increase patrols in {{ regions.top_region.name }} hotspots</li>
+          <li>Maintain firebreak clearance in high-risk areas</li>
+          <li>Pre-position water bombers in {{ weather.locations.main_area }}</li>
+          <li>Community awareness campaigns in affected provinces</li>
+        </ul>
+      </div>
+      
+      <p>
+        <strong>Next Update:</strong> {{ report_date[:10] }} 15:00 UTC<br>
+        <strong>Report Confidence Level:</strong> {{ confidence.overall }}%
+      </p>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      <p>
+        <strong>Data Sources:</strong> {{ sources.satellite }} satellite imagery, {{ sources.weather }} weather stations<br>
+        <strong>Report ID:</strong> WF-{{ report_date[:10].replace("-", "") }}-{{ fire_count.total }}<br>
+        <strong>Contact:</strong> {{ contact.email }} | {{ contact.phone }}<br>
+        <em>This is an automated wildfire monitoring report. Verify critical information before operational decisions.</em>
+      </p>
+    </div>
+  </div>
+</body>
+</html>

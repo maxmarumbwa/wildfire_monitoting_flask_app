@@ -569,5 +569,72 @@ def report():
     )
 
 
+# Reporting
+@app.route("/report2")
+def fire_report_simple():
+    return render_template(
+        "analytics/fire_bulletin2.html",
+        # Basic Information
+        report_date="2024-03-20 09:45 UTC",
+        start_date="2024-03-13",
+        end_date="2024-03-20",
+        # Fire Count (simple dictionary)
+        fire_count={"total": 87, "active": 23},
+        # Regions (using list index operations)
+        regions={
+            "top_region": {"name": "Zambezia", "count": 35},
+            "second_region": {"name": "Katanga", "count": 28},
+            "third_region": {"name": "Eastern Province", "count": 24},
+        },
+        # Timeseries (using list operations)
+        timeseries={
+            "trend": "stable",
+            "peak_date": "2024-03-15",
+            "peak_count": 15,
+            "daily_counts": [12, 14, 15, 11, 13, 12, 10],
+        },
+        # Statistics
+        statistics={"total_area": 4500, "avg_size": 51.7},
+        # Weather (simple structure)
+        weather={
+            "risk_level": "moderate",
+            "avg_temp": 32.5,
+            "humidity": 45,
+            "wind_speed": 15,
+            "wind_direction": "southeast",
+            "locations": {
+                "main_area": "Harare",
+                "main_temp": 31,
+                "main_humidity": 42,
+                "main_wind": "14 SE",
+                "main_risk": "High",
+                "secondary_area": "Gweru",
+                "secondary_temp": 33,
+                "secondary_humidity": 38,
+                "secondary_wind": "16 E",
+                "secondary_risk": "Moderate",
+            },
+        },
+        # Charts
+        charts={
+            "timeline_chart": "/static/charts/timeline_0320.png",
+            "regional_map": "/static/maps/regional_0320.png",
+        },
+        # Default values for other fields
+        danger_rating={"level": "Medium", "factors": "seasonal conditions"},
+        forecast={
+            "conditions": "mostly sunny",
+            "precipitation_probability": 20,
+            "temp_min": 28,
+            "temp_max": 35,
+        },
+        recommendations={"actions": "Monitor hotspots, maintain firebreaks"},
+        resources={"aircraft": 4, "personnel": 125},
+        sources={"satellite": "NASA VIIRS", "weather": "Local stations"},
+        confidence={"overall": 88},
+        contact={"email": "fires@africa.org", "phone": "+263 123 4567"},
+    )
+
+
 if __name__ == "__main__":
     app.run(debug=True)
