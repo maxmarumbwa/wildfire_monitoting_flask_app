@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="settings-container">
+    {% include "header.html" %}
+    
+    <div id="settings">
+        <nav id="left-settings" class="sidebar-title">
+            <div class="nav-item sidebar-title">
+                <a href="{{ url_for('index') }}"><i class="fas fa-home"></i> Home</a>
+            </div>
+            <div class="nav-item sidebar-title">
+                <a href="{{ url_for('fwi_form') }}"><i class="fas fa-cog"></i> Weather forecast maps</a>
+            </div>
+            <div class="nav-item sidebar-title">
+                <a href="{{ url_for('fwi_map') }}"><i class="fas fa-cog"></i> Satellite imagery</a>
+            </div>
+  
+        </nav>
+        
+        <div class="container">
+
+
+
+
+
+        </div>
+    </div>
+    
+    {% include 'footer.html' %}
+</div>
+
+
+{% endblock %}

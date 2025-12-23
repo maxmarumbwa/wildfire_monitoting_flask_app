@@ -1,9 +1,22 @@
 {% extends "base.html" %}
+{%include "head.html"%}
+{% block head_libs %}
+<!-- Leaflet v1.4.0 (required by Windy) -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js"></script>
+<!-- Windy API -->
+<script src="https://api.windy.com/assets/map-forecast/libBoot.js"></script>
 
+<style>
+    #windy {
+        width: 100%;
+        height: 500px;
+    }
+</style>
+{% endblock %}
 {% block content %}
 <div class="container-fluid mt-2">
     <h5>🌧️ Windy Rain Overlay – Zimbabwe</h5>
-
     {% include "partials/windy-map.html" %}
 </div>
 {% endblock %}
