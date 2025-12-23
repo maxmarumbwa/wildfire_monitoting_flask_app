@@ -104,7 +104,7 @@ def fwi_place():
 @app.route("/forecast/rain")
 def forecast_rain2():
     return render_template(
-        "satellite_models/forecast.html", windy_key=os.getenv("WINDY_API_KEY")
+        "satellite_models/forecast-windy.html", windy_key=os.getenv("WINDY_API_KEY")
     )
 
 

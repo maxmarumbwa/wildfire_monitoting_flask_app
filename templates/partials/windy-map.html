@@ -1,22 +1,16 @@
-    
-    <div id="windy"></div>
+<div id="windy" style="width:100%; height:500px;"></div>
 
-    <script>
-        const options = {
-            key: "{{ windy_key }}",
-            lat: -19.0154,
-            lon: 29.1549,
-            zoom: 6,
+<script>
+  const options = {
+      key: "{{ windy_key }}",
+      lat: -19.0154,
+      lon: 29.1549,
+      zoom: 6,
+      overlay: "rain" // wind | rain | clouds
+  };
 
-            // 👇 CHANGE OVERLAY HERE:
-            // "wind" | "rain" | "clouds"
-            overlay: "rain"
-        };
-
-        windyInit(options, (windyAPI) => {
-            const { overlays } = windyAPI;
-
-            // Wind metric (only applies when overlay = "wind")
-            overlays.wind.setMetric("bft");
-        });
-    </script>
+  windyInit(options, (windyAPI) => {
+      const { overlays } = windyAPI;
+      overlays.wind.setMetric("bft");
+  });
+</script>
