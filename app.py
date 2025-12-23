@@ -100,6 +100,14 @@ def fwi_place():
     return jsonify(response.json())
 
 
+# Forecast and satellite data
+@app.route("/forecast/rain")
+def forecast_rain2():
+    return render_template(
+        "satellite_models/forecast.html", windy_key=os.getenv("WINDY_API_KEY")
+    )
+
+
 # ---------------- Analytics ----------------#
 # ------ Historical fire data and stats------
 @app.route("/analytics")
